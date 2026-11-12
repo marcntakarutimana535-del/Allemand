@@ -1,0 +1,42 @@
+name: Build APK
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - name: Installer Capacitor
+        run: npm install
+      - name: Créer le projet Android
+        run: |
+          npx cap add android
+          npx cap sync android
+      - name: Compiler l'APK
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug
+      - name: Renommer l'APK
+        run: cp android/app/build/outputs/apk/debug/app-debug.apk Allemand-0-B2.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Allemand-0-B2
+          path: Allemand-0-B2.apk
+      - name: Publier dans Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ github.run_number }}
+          name: Allemand 0-B2 v${{ github.run_number }}
+          files: Allemand-0-B2.apk
