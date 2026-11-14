@@ -1,0 +1,1031 @@
+<!doctype html>
+<html lang="fr">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#102344">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Allemand 0 → B2</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<style>
+/* Thème : verre sur dégradé nuit (modèle TCF Canada). Layout: mobile-first course reader. Fixed bottom tab bar (Cours, Cartes, Quiz, Recherche, Progrès); content in one column, max 720px. Palette: cool paper, petrol green accent, marker-yellow highlight for German. */
+
+*{box-sizing:border-box}
+html,body{margin:0}
+html{font-size:var(--root,100%)}
+body{color:var(--ink);font-family:var(--f-body);font-size:1.0625rem;line-height:var(--lh,1.5);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 118px;-webkit-text-size-adjust:100%}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:30}
+#app{max-width:720px;margin:0 auto;min-width:0}
+h1,h2,h3{font-family:var(--f-display);line-height:1.15;margin:0;text-wrap:balance}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);display:flex;align-items:center;gap:10px;padding:10px 0;min-height:56px}
+.top h1{font-size:1.15rem;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.iconbtn{border:1px solid var(--line);background:var(--surface);border-radius:12px;min-width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;font-size:1.1rem;padding:0 12px}
+.iconbtn.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.hero{padding:18px 0 8px}
+.hero .kicker{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.hero h1{font-size:2.1rem;margin-top:4px}
+.hero h1 span{background:linear-gradient(transparent 60%,var(--mark) 60%)}
+.cont{display:flex;gap:12px;align-items:center;width:100%;text-align:left;margin:14px 0;padding:14px 16px;border:0;border-radius:16px;background:var(--accent);color:var(--accent-ink)}
+.cont small{display:block;opacity:.85;font-size:.8rem;text-transform:uppercase;letter-spacing:.06em}
+.cont b{font-family:var(--f-display);font-size:1.1rem;font-weight:600}
+.cont .arrow{margin-left:auto;font-size:1.4rem}
+.seg{display:flex;background:var(--surface2);border-radius:14px;padding:4px;gap:4px;margin:10px 0 4px}.seg button{flex:1;border:0;background:none;border-radius:11px;min-height:42px;font-weight:600;color:var(--muted)}.seg button[aria-pressed=true],.seg button[aria-selected=true]{background:var(--surface);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:6px 0 18px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.stat b{display:block;font-family:var(--f-display);font-size:1.5rem;font-variant-numeric:tabular-nums}
+.stat span{font-size:.8rem;color:var(--muted)}
+.list{display:flex;flex-direction:column;gap:8px}
+.row{display:flex;gap:12px;align-items:center;width:100%;text-align:left;padding:12px 14px;border:1px solid var(--line);background:var(--surface);border-radius:14px;min-width:0}
+.row .n{flex:none;width:34px;height:34px;border-radius:10px;background:var(--surface2);display:grid;place-items:center;font-family:var(--f-display);font-weight:700;font-size:.9rem;font-variant-numeric:tabular-nums}
+.row .t{flex:1;min-width:0}
+.row .t b{display:block;font-weight:600;line-height:1.25}
+.row .t small{color:var(--muted);font-size:.82rem}
+.row.done .n{background:var(--good);color:#fff}
+.bar{height:5px;background:var(--surface2);border-radius:3px;margin-top:6px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:3px}
+.chev{color:var(--muted);flex:none}
+.setc{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:8px 0;display:flex;flex-direction:column;gap:8px}.crow{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}.crow a{color:var(--accent);font-weight:600;overflow-wrap:anywhere;min-width:0}
+.crow{display:flex;gap:10px;align-items:center;justify-content:space-between}.crow span{min-width:0;overflow-wrap:anywhere;user-select:all}a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:center}
+.setc small{color:var(--muted)}.setc .seg{margin:0}.setc .seg button{font-size:.88rem;padding:4px 6px;line-height:1.15}.setc input[type=range]{width:100%;accent-color:var(--accent);min-height:32px}.fsrow{display:flex;justify-content:space-between;color:var(--muted)}.demo{margin:0;padding:10px;border-radius:10px;background:var(--surface2)}textarea{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px;width:100%;min-width:0;resize:vertical}
+.sec{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:22px 0 8px}
+/* lesson */
+.lesson{padding-bottom:12px}
+.lesson h1.ltitle{font-size:1.75rem;margin:6px 0 4px}
+.lesson .crumb{color:var(--muted);font-size:.85rem}
+.lesson h2{font-size:1.35rem;margin:28px 0 8px;padding-top:6px;border-top:2px solid var(--accent)}
+.lesson h3{font-size:1.1rem;margin:20px 0 6px;color:var(--accent)}
+.lesson p{margin:8px 0}
+.lesson ul{padding:0;margin:8px 0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.lesson li{display:flex;gap:10px}
+.lesson li::before{content:"•";color:var(--accent);font-weight:700}
+.lesson li.num::before{content:attr(data-n);min-width:1.4em;font-family:var(--f-display);font-weight:700}
+.kv{margin:10px 0;padding:10px 12px;border-radius:12px;background:var(--accent-soft)}
+.kv b{font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:2px}
+.ex{display:flex;gap:10px;align-items:flex-start;margin:8px 0;padding:8px 10px 8px 12px;border-left:4px solid var(--accent);background:var(--surface);border-radius:0 12px 12px 0;width:100%;text-align:left;border-top:0;border-right:0;border-bottom:0}
+.ex .tx{flex:1;min-width:0}
+.de{font-weight:700;color:var(--de)}.frc{color:var(--frc)}.de2{color:var(--de);font-weight:600}
+.ex .fr{display:block;color:var(--frc);font-size:.92rem}
+.hidefr .fr{display:none}.hidefr.show .fr{display:block}.hidefr .tx::after{content:"Touchez pour voir la traduction";display:block;font-size:.78rem;color:var(--muted)}.hidefr.show .tx::after{display:none}
+.spk{flex:none;width:36px;height:36px;border-radius:50%;border:0;background:var(--mark);color:var(--mark-ink);display:grid;place-items:center;font-size:1rem}
+.tbl{overflow-x:auto;margin:12px 0;border:1px solid var(--line);border-radius:12px;background:var(--surface);-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top;min-width:78px}
+th{background:var(--surface2);font-size:.82rem;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.de{cursor:pointer}td.de::after{content:"";}.legend{display:flex;gap:14px;font-size:.85rem;margin:6px 0 0}.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;background:currentColor}
+.fcard .big.de{font-weight:700}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 14px;min-height:44px;font-weight:600}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.good{background:var(--good);border-color:var(--good);color:#fff}
+.btn.bad{background:var(--bad);border-color:var(--bad);color:#fff}
+.btn.wide{flex:1}
+.pager{display:flex;gap:8px;margin:20px 0}
+.pager .btn{flex:1;text-align:left;font-weight:600;line-height:1.2;min-width:0}
+.pager small{display:block;color:var(--muted);font-weight:400}
+/* tabs */
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:25;background:var(--surface);border-top:1px solid var(--line);display:flex;padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
+nav.tabs button{flex:1;border:0;background:none;padding:6px 2px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.72rem;color:var(--muted);border-radius:10px;min-height:48px}
+nav.tabs button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+nav.tabs button[aria-current="true"]{color:var(--accent);font-weight:700}
+/* cards */
+.scope{display:flex;gap:8px;margin:6px 0 14px;flex-wrap:wrap}
+select,input[type=search]{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;min-height:44px;min-width:0;max-width:100%}
+select{flex:1}
+.fc{perspective:900px;margin:10px 0}
+.fcard{min-height:240px;width:100%;border-radius:20px;border:1px solid var(--line);background:var(--surface);padding:24px 18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;box-shadow:0 6px 24px -14px rgba(0,0,0,.35)}
+.fcard .side{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.fcard .big{font-family:var(--f-display);font-size:1.7rem;line-height:1.25;overflow-wrap:anywhere}
+.fcard.back{background:var(--accent-soft)}
+.prog{font-size:.85rem;color:var(--muted);display:flex;justify-content:space-between;margin-top:6px}
+/* quiz */
+.q{margin:8px 0}
+.q .qt{font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.q .qq{font-family:var(--f-display);font-size:1.4rem;line-height:1.25;margin:6px 0 4px;overflow-wrap:anywhere}
+.q .hint{color:var(--muted);font-style:italic;margin-bottom:6px}
+.opts{display:flex;flex-direction:column;gap:8px;margin:12px 0}
+.opt{text-align:left;border:2px solid var(--line);background:var(--surface);border-radius:14px;padding:12px 14px;min-height:48px;line-height:1.3}
+.opt.ok{border-color:var(--good);background:var(--good-soft)}
+.opt.ko{border-color:var(--bad);background:var(--bad-soft)}
+.opt[disabled]{cursor:default}
+.score{text-align:center;padding:22px 10px}
+.score b{display:block;font-family:var(--f-display);font-size:3rem;font-variant-numeric:tabular-nums}
+.empty{padding:28px 8px;text-align:center;color:var(--muted)}
+.fnd{background:var(--mark);color:var(--mark-ink);border-radius:3px;padding:0 2px;box-shadow:0 0 0 2px var(--mark)}.fnd.cur{outline:3px solid var(--accent);outline-offset:1px;animation:fpulse 1s ease 2}@keyframes fpulse{50%{box-shadow:0 0 0 7px rgba(255,200,0,.5)}}
+.hl{background:var(--mark);color:var(--mark-ink);border-radius:3px;padding:0 1px}
+.snip{color:var(--muted);font-size:.9rem;margin-top:2px;overflow-wrap:anywhere}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;z-index:40;max-width:90vw;font-size:.9rem}
+.spin{padding:40px;text-align:center;color:var(--muted)}
+.pbar{display:flex;flex-direction:column;gap:12px}
+.pbar .l{display:flex;justify-content:space-between;gap:8px;font-size:.92rem}
+.pbar .l span:last-child{color:var(--muted);font-variant-numeric:tabular-nums;flex:none}
+@media (prefers-reduced-motion:no-preference){.fcard{transition:transform .2s}.fcard:active{transform:scale(.985)}}
+/* ===== Thème « verre sur dégradé nuit » (modèle TCF Canada) ===== */
+:root{
+  --bg:#0c1427; --surface:rgba(255,255,255,.075); --surface2:rgba(255,255,255,.11); --ink:#EAF0FA; --muted:#A3B3CE; --line:rgba(255,255,255,.14);
+  --de:#7FB6FF; --frc:#6FE3B4; --accent:#4189DE; --accent-ink:#FFFFFF; --accent-soft:rgba(65,137,222,.2); --mark:#F2B705; --mark-ink:#2B2100;
+  --good:#1C916C; --good-soft:rgba(28,145,108,.25); --bad:#E0605A; --bad-soft:rgba(224,96,90,.22);
+  --page:linear-gradient(180deg,#14305e 0%,#0f2142 26%,#0a2030 50%,#1b1b3e 78%,#251f4d 100%);
+  --top:#102344; --navbg:rgba(59,54,97,.78); --navon:rgba(110,104,150,.55); --navink:#6FA8F0;
+  --g-blue:linear-gradient(135deg,rgba(65,137,222,.34),rgba(29,69,93,.5)); --g-green:linear-gradient(135deg,rgba(28,145,108,.32),rgba(25,76,84,.5)); --g-amber:linear-gradient(135deg,rgba(242,183,5,.24),rgba(45,77,90,.5));
+  --t-blue:linear-gradient(145deg,#4a93ec,#2c79d4); --t-green:linear-gradient(145deg,#27ab7f,#167356); --t-amber:linear-gradient(145deg,#f7c61a,#d39f00);
+  --shadow:0 10px 30px -14px rgba(0,0,0,.6); color-scheme:dark}
+:root[data-theme="light"]{
+  --bg:#EAF1FB; --surface:rgba(255,255,255,.78); --surface2:rgba(16,35,68,.07); --ink:#10213F; --muted:#51627F; --line:rgba(16,35,68,.13);
+  --de:#1F5FBF; --frc:#137A58; --accent:#2C79D4; --accent-soft:rgba(44,121,212,.14); --mark:#F7C61A; --mark-ink:#2B2100;
+  --good:#1C916C; --good-soft:rgba(28,145,108,.16); --bad:#C8453F; --bad-soft:rgba(200,69,63,.14);
+  --page:linear-gradient(180deg,#DCE9FB 0%,#E6EFF8 35%,#E3F1EF 65%,#ECE8F8 100%);
+  --top:#DCE9FB; --navbg:rgba(255,255,255,.82); --navon:rgba(44,121,212,.15); --navink:#2C79D4;
+  --g-blue:linear-gradient(135deg,rgba(65,137,222,.2),rgba(255,255,255,.7)); --g-green:linear-gradient(135deg,rgba(28,145,108,.18),rgba(255,255,255,.7)); --g-amber:linear-gradient(135deg,rgba(242,183,5,.22),rgba(255,255,255,.7));
+  --shadow:0 10px 26px -16px rgba(16,35,68,.45); color-scheme:light}
+@media (prefers-color-scheme:light){:root:not([data-theme]){
+  --bg:#EAF1FB; --surface:rgba(255,255,255,.78); --surface2:rgba(16,35,68,.07); --ink:#10213F; --muted:#51627F; --line:rgba(16,35,68,.13);
+  --de:#1F5FBF; --frc:#137A58; --accent:#2C79D4; --accent-soft:rgba(44,121,212,.14); --mark:#F7C61A;
+  --good-soft:rgba(28,145,108,.16); --bad:#C8453F; --bad-soft:rgba(200,69,63,.14);
+  --page:linear-gradient(180deg,#DCE9FB 0%,#E6EFF8 35%,#E3F1EF 65%,#ECE8F8 100%);
+  --top:#DCE9FB; --navbg:rgba(255,255,255,.82); --navon:rgba(44,121,212,.15); --navink:#2C79D4;
+  --g-blue:linear-gradient(135deg,rgba(65,137,222,.2),rgba(255,255,255,.7)); --g-green:linear-gradient(135deg,rgba(28,145,108,.18),rgba(255,255,255,.7)); --g-amber:linear-gradient(135deg,rgba(242,183,5,.22),rgba(255,255,255,.7));
+  --shadow:0 10px 26px -16px rgba(16,35,68,.45); color-scheme:light}}
+html{background:var(--bg) var(--page) fixed;min-height:100%}
+body{background:transparent;padding-bottom:118px}
+body::before{background:var(--top)}
+.top{background:color-mix(in srgb,var(--top) 78%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.row,.stat,.setc,.tbl,.ex,.kv,.fcard,.opt,.btn,.iconbtn,select,input[type=search],textarea{backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.row{border-radius:20px;padding:14px 16px;box-shadow:var(--shadow)}
+.row .n{border-radius:12px;background:var(--t-blue);color:#fff}
+.row.done .n{background:var(--t-green)}
+.stat,.setc,.tbl{border-radius:18px}
+.btn,.iconbtn{border-radius:14px}
+.btn.pri,.cont{background:var(--t-blue);border-color:transparent;color:#fff}
+.cont{border-radius:22px;box-shadow:0 14px 30px -14px rgba(44,121,212,.8)}
+.iconbtn.on{background:var(--t-green);border-color:transparent;color:#fff}
+.seg{border-radius:18px;background:var(--surface);border:1px solid var(--line);backdrop-filter:blur(12px)}
+.seg button[aria-pressed=true],.seg button[aria-selected=true]{background:var(--t-blue);color:#fff;box-shadow:0 6px 16px -8px rgba(44,121,212,.9)}
+.kv{background:var(--accent-soft);border:1px solid var(--line);border-radius:16px}
+.ex{border-left-color:var(--accent);border-radius:0 16px 16px 0}
+.spk{background:var(--t-amber);color:#2B2100}
+.lesson h2{border-top-color:var(--accent)}.lesson h3{color:var(--de)}
+.lesson li::before,.crow a{color:var(--de)}
+.bar i{background:var(--t-blue)}
+.fcard{border-radius:26px;box-shadow:var(--shadow)}.fcard.back{background:var(--g-green)}
+.opt{border-radius:16px}
+select,option,optgroup{background-color:#14233f;color:#EAF0FA}
+:root[data-theme="light"] select,:root[data-theme="light"] option,:root[data-theme="light"] optgroup{background-color:#fff;color:#10213F}
+nav.tabs{left:50%;right:auto;transform:translateX(-50%);width:min(94%,560px);bottom:calc(12px + env(safe-area-inset-bottom,0px));border:1px solid rgba(255,255,255,.16);border-radius:30px;background:var(--navbg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:6px;gap:2px;box-shadow:0 16px 36px -14px rgba(0,0,0,.7)}
+nav.tabs button{border-radius:24px;min-height:52px;font-size:.68rem}
+nav.tabs button[aria-current="true"]{background:var(--navon);color:var(--navink)}
+.toast{bottom:calc(100px + env(safe-area-inset-bottom,0px))}
+/* en-tête type « pilule » + tuiles */
+.pill{display:flex;align-items:center;gap:10px;margin-top:10px;padding:7px 8px 7px 10px;border:1px solid var(--line);border-radius:26px;background:var(--surface);backdrop-filter:blur(14px);box-shadow:var(--shadow)}
+.pill b{flex:1;text-align:center;font-family:var(--f-display);font-size:1.05rem}.pill .iconbtn{border:0;background:var(--surface2);min-width:40px;height:40px;border-radius:50%}
+.pill img{width:42px;height:42px;border-radius:50%;object-fit:cover;border:2px solid var(--line)}
+.greet{margin:18px 2px 2px;font-family:var(--f-display);font-size:1.9rem;font-weight:700}.greet+p{margin:0 2px 6px;color:var(--muted)}
+.tiles{display:flex;flex-direction:column;gap:12px;margin:14px 0}
+.tile{display:flex;gap:14px;align-items:center;width:100%;text-align:left;padding:16px;border:1px solid var(--line);border-radius:26px;box-shadow:var(--shadow);backdrop-filter:blur(14px)}
+.tile.b{background:var(--g-blue)}.tile.g{background:var(--g-green)}.tile.a{background:var(--g-amber);padding:12px 16px;border-radius:22px}
+.tile i{flex:none;width:58px;height:58px;border-radius:16px;display:grid;place-items:center;font-style:normal;font-size:1.6rem;color:#fff;box-shadow:0 8px 20px -8px rgba(0,0,0,.6)}
+.tile.b i{background:var(--t-blue)}.tile.g i{background:var(--t-green)}.tile.a i{background:var(--t-amber);width:46px;height:46px;border-radius:13px}
+.tile .t{flex:1;min-width:0}.tile b{display:block;font-family:var(--f-display);font-size:1.2rem}.tile small{color:var(--muted)}.tile .chev{font-size:1.4rem}
+/* verbes */
+.chips{display:flex;gap:8px;overflow-x:auto;padding:4px 0 8px;margin:0 -2px;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 14px;font-size:.88rem;font-weight:600;color:var(--muted);min-height:38px}
+.chip[aria-pressed=true]{background:var(--t-blue);border-color:transparent;color:#fff}
+.chips.lt .chip{padding:6px 11px;min-width:38px;text-align:center}
+.vrow{box-shadow:none;padding:11px 14px}.vrow .t b{font-size:1.08rem}.vrow .forms{display:block;color:var(--muted);font-size:.82rem;margin-top:1px}.vfav{color:var(--mark);font-size:1.1rem}
+.bdg{display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;padding:2px 8px;border-radius:999px;margin:0 4px 4px 0;background:var(--surface2);color:var(--ink)}
+.bdg.fort{background:rgba(224,96,90,.25)}.bdg.faible{background:rgba(28,145,108,.28)}.bdg.mixte{background:rgba(242,183,5,.28)}.bdg.modal,.bdg.auxiliaire{background:rgba(139,124,240,.32)}.bdg.sein{background:rgba(65,137,222,.34)}
+.vhero{padding:18px;border:1px solid var(--line);border-radius:26px;background:var(--g-blue);box-shadow:var(--shadow);margin:8px 0}
+.vhero h1{font-size:2rem;color:var(--de);display:flex;align-items:center;gap:10px}.vhero .fr{font-size:1.05rem;color:var(--frc);margin:2px 0 10px}
+.stam{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.stam div{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:8px 6px;text-align:center}.stam small{display:block;color:var(--muted);font-size:.7rem;text-transform:uppercase;letter-spacing:.05em}.stam b{font-family:var(--f-display);font-size:1.05rem;color:var(--de);overflow-wrap:anywhere}
+.ctab td:first-child{color:var(--muted);width:34%;white-space:nowrap}.ctab td{cursor:pointer;font-size:1.02rem}.ctab td+td{font-weight:700;color:var(--de)}
+.note{color:var(--muted);font-size:.9rem;margin:4px 2px 10px}
+.vsearch{display:flex;gap:8px;margin:6px 0 4px}.vsearch input{flex:1}
+
+details.gsec{border:1px solid var(--line);border-radius:20px;background:var(--surface);margin:10px 0;box-shadow:var(--shadow);backdrop-filter:blur(12px)}
+details.gsec summary{display:flex;align-items:center;gap:12px;padding:14px 16px;font-family:var(--f-display);font-weight:700;font-size:1.08rem;cursor:pointer;list-style:none;min-height:56px}
+details.gsec summary::-webkit-details-marker{display:none}details.gsec summary::after{content:"›";margin-left:auto;font-size:1.5rem;color:var(--muted);transition:transform .2s}
+details.gsec[open] summary::after{transform:rotate(90deg)}details.gsec[open] summary{border-bottom:1px solid var(--line)}
+.gn{flex:none;width:32px;height:32px;border-radius:10px;background:var(--t-blue);color:#fff;display:grid;place-items:center;font-size:.9rem}.gbody{padding:4px 14px 14px}.gbody h2{display:none}
+</style>
+
+<div id="app"></div>
+<nav class="tabs" id="tabs" aria-label="Navigation principale"></nav>
+<div id="toastbox"></div>
+
+<script>
+(function(){
+'use strict';
+/* ---------- storage ---------- */
+var KEY='de0b2:v1';
+var S={done:{},cards:{},quiz:{},last:null,days:{},dir:'de',mode:'c',set:{}};
+var DEF={name:'',theme:'dark',fs:100,lh:1.5,rate:.9,hide:false,newc:20,qn:10};
+try{var raw=localStorage.getItem(KEY); if(raw){var o=JSON.parse(raw); for(var k in o) S[k]=o[k];}}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+function G(k){var v=S.set&&S.set[k];return v===undefined?DEF[k]:v;}
+function applySettings(){
+  var r=document.documentElement,t=G('theme');
+  if(t==='light'||t==='dark')r.setAttribute('data-theme',t);else r.removeAttribute('data-theme');
+  r.style.setProperty('--root',G('fs')+'%');r.style.setProperty('--lh',G('lh'));
+}
+function today(){return new Date().toISOString().slice(0,10);}
+function touchDay(){S.days[today()]=1;save();}
+function streak(){var n=0,d=new Date();for(;;){var k=d.toISOString().slice(0,10);if(S.days[k]){n++;d.setDate(d.getDate()-1);}else if(n===0&&k===today()){d.setDate(d.getDate()-1);}else break;}return n;}
+
+/* ---------- data ---------- */
+var META=[],CATS={},LES={},LESMETA={},ORDER=[],ORD={c:[],d:[]};
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function fold(s){return String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();}
+function getJSON(u){return fetch(u).then(function(r){if(!r.ok)throw new Error(u+' '+r.status);return r.json();});}
+function loadMeta(){
+  return getJSON('data/meta.json').then(function(m){
+    META=m;
+    m.forEach(function(c){c.lessons.forEach(function(l){l.cat=c.id;l.catname=c.name;l.k=c.k;LESMETA[l.id]=l;ORDER.push(l.id);ORD[c.k].push(l.id);});});
+  });
+}
+var loading={};
+function loadCat(id){
+  if(CATS[id])return Promise.resolve();
+  if(loading[id])return loading[id];
+  loading[id]=getJSON('data/c'+(id<10?'0':'')+id+'.json').then(function(d){CATS[id]=1;for(var k in d)LES[k]=d[k];});
+  return loading[id];
+}
+function loadAll(){return Promise.all(META.map(function(c){return loadCat(c.id);}));}
+
+/* ---------- speech ---------- */
+var voice=null;
+function pickVoice(){try{var vs=speechSynthesis.getVoices();voice=vs.filter(function(v){return /^de/i.test(v.lang);})[0]||null;}catch(e){}}
+try{pickVoice();speechSynthesis.onvoiceschanged=pickVoice;}catch(e){}
+function speak(t){
+  try{
+    if(!('speechSynthesis' in window))throw 0;
+    pickVoice();
+    speechSynthesis.cancel();
+    var u=new SpeechSynthesisUtterance(String(t).replace(/\s*[\(\[].*?[\)\]]/g,'').replace(/\//g,', '));
+    u.lang='de-DE';u.rate=G('rate');if(voice)u.voice=voice;
+    speechSynthesis.speak(u);
+    if(!voice)toast('Aucune voix allemande détectée : installez-en une dans les réglages du téléphone.');
+  }catch(e){toast('La lecture audio n’est pas disponible sur cet appareil.');}
+}
+var tt;function toast(m){var b=document.getElementById('toastbox');b.innerHTML='<div class="toast" role="status">'+esc(m)+'</div>';clearTimeout(tt);tt=setTimeout(function(){b.innerHTML='';},3200);}
+
+/* ---------- state / routing ---------- */
+var V={name:'home'};
+var nav=[];
+function go(v,push){if(push!==false){V.sy=window.scrollY;nav.push(V);}V=v;render();window.scrollTo(0,0);}
+function back(){var p=nav.pop();V=p||{name:'home'};render();var y=V.sy||0;window.scrollTo(0,y);setTimeout(function(){window.scrollTo(0,y)},60);}
+function tab(n){nav=[];V={name:n};render();window.scrollTo(0,0);}
+
+var ICONS={
+  home:'<svg viewBox="0 0 24 24"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H13v16h5.5a1.5 1.5 0 0 0 1.5-1.5z"/></svg>',
+  cards:'<svg viewBox="0 0 24 24"><rect x="3" y="6" width="14" height="12" rx="2"/><path d="M7 3h12a2 2 0 0 1 2 2v10"/></svg>',
+  quiz:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .8-1 1.7M12 17h.01"/></svg>',
+  search:'<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>',
+  prog:'<svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>',
+  set:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>'
+};
+var TABS=[['home','Lire'],['cards','Cartes'],['quiz','Quiz'],['search','Recherche'],['prog','Progrès'],['set','Réglages']];
+function section(){var n=V.name;return(n==='cat'||n==='lesson'||n==='verb'||n==='vguide'||n==='vprac')?'home':n;}
+function renderTabs(){
+  document.getElementById('tabs').innerHTML=TABS.map(function(t){return '<button data-tab="'+t[0]+'"'+(section()===t[0]?' aria-current="true"':'')+'>'+ICONS[t[0]]+'<span>'+t[1]+'</span></button>';}).join('');
+}
+
+/* ---------- helpers ---------- */
+function doneCount(c){return c.lessons.filter(function(l){return S.done[l.id];}).length;}
+function totalDone(){return Object.keys(S.done).length;}
+function ckey(de){var h=5381;for(var i=0;i<de.length;i++)h=((h<<5)+h+de.charCodeAt(i))|0;return (h>>>0).toString(36);}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+var DEH={'allemand':1,'deutsch':1,'exemple allemand':1,'expression':1,'verbe':1,'mot':1,'phrase allemande':1,'vocabulaire':1,'infinitif':1};
+function rich(t){return esc(t).replace(/\u27e6/g,'<span class="de2">').replace(/\u27e7/g,'</span>');}
+function plain(t){return String(t).replace(/[\u27e6\u27e7]/g,'');}
+function speakBtn(t){return '<button class="spk" data-speak="'+esc(t)+'" aria-label="Écouter">&#128266;</button>';}
+
+/* ---------- views ---------- */
+var app=document.getElementById('app');
+function render(){
+  if(typeof clearFind==='function'&&V.name!=='lesson'){var fb=document.getElementById('fbar');if(fb)fb.remove();}
+  renderTabs();
+  var f={verb:vVerb,vguide:vVGuide,vprac:vVPrac,home:vHome,cat:vCat,lesson:vLesson,cards:vCards,quiz:vQuiz,search:vSearch,prog:vProg,set:vSet}[V.name]||vHome;
+  f();
+}
+
+function modeCats(k){return META.filter(function(c){return c.k===k;});}
+function vHome(){
+  if(S.mode==='v')return vVerbHome();
+  var k=S.mode,lastL=S.last&&LESMETA[S.last];
+  var ids=ORD[k],td=ids.filter(function(i){return S.done[i];}).length;
+  var h=topPill()+'<div class="hero" style="display:flex;align-items:center;gap:14px"><div style="min-width:0"><div class="kicker">'+(k==='c'?'Cours complet · '+ORD.c.length+' fiches':'Dictionnaire thématique · '+ORD.d.length+' chapitres')+'</div><h1>'+(k==='c'?'Allemand <span>0 → B2</span>':'Dictionnaire <span>DE ↔ FR</span>')+'</h1></div></div>';
+  h+=segHtml(k);
+  var resume=(lastL&&lastL.k===k),showL=resume?lastL:LESMETA[ids[0]];
+  h+='<button class="cont" data-lesson="'+showL.id+'"><div><small>'+(resume?(S.done[showL.id]?'Dernière leçon':'Reprendre'):'Commencer')+'</small><b>'+esc(showL.title)+'</b></div><span class="arrow">&rarr;</span></button>';
+  h+='<div class="stats"><div class="stat"><b>'+td+'<small style="font-size:.9rem;color:var(--muted)"> / '+ids.length+'</small></b><span>'+(k==='c'?'leçons terminées':'chapitres lus')+'</span></div><div class="stat"><b>'+streak()+'</b><span>jours de suite</span></div><div class="stat"><b>'+learned()+'</b><span>cartes apprises</span></div></div>';
+  if(k==='d')h+='<button class="row" data-tab="search" style="margin-bottom:6px"><span class="n">&#128269;</span><span class="t"><b>Chercher un mot</b><small>Allemand ou français, dans tout le dictionnaire</small></span><span class="chev">&rsaquo;</span></button>';
+  h+='<div class="sec">Catégories</div><div class="list">';
+  modeCats(k).forEach(function(c,ci){var d=doneCount(c),n=c.lessons.length;
+    h+='<button class="row'+(d===n?' done':'')+'" data-cat="'+c.id+'"><span class="n">'+(d===n?'&#10003;':(k==='c'?c.id:ci+1))+'</span><span class="t"><b>'+esc(c.name)+'</b><small>'+d+' / '+n+(k==='c'?' leçons':' chapitres')+'</small><div class="bar"><i style="width:'+Math.round(d/n*100)+'%"></i></div></span><span class="chev">&rsaquo;</span></button>';});
+  h+='</div><button class="row" data-tab="set" style="margin-top:14px"><span class="n">i</span><span class="t"><b>À propos et contact</b><small>Description de l’application, auteur, réglages</small></span><span class="chev">&rsaquo;</span></button>';
+  app.innerHTML=h;
+}
+function learned(){var n=0;for(var k in S.cards)if(S.cards[k].b>=3)n++;return n;}
+
+function vCat(){
+  var c=META.filter(function(x){return x.id===V.id;})[0];
+  var h='<div class="top"><button class="iconbtn" data-back aria-label="Retour">&larr;</button><h1>'+esc(c.name)+'</h1></div><div class="list">';
+  c.lessons.forEach(function(l,i){
+    h+='<button class="row'+(S.done[l.id]?' done':'')+'" data-lesson="'+l.id+'"><span class="n">'+(S.done[l.id]?'&#10003;':(i+1))+'</span><span class="t"><b>'+esc(l.title)+'</b><small>'+(l.nc?l.nc+' cartes':'')+(l.nc&&l.nq?' · ':'')+(l.nq?l.nq+' questions':'')+(!l.nc&&!l.nq?(l.k==='d'?'Chapitre de lecture':'Fiche de lecture'):'')+'</small></span><span class="chev">&rsaquo;</span></button>';});
+  app.innerHTML=h+'</div>';
+}
+
+function vLesson(){
+  var m=LESMETA[V.id];
+  app.innerHTML='<div class="top"><button class="iconbtn" data-back aria-label="Retour">&larr;</button><h1>'+esc(m.catname)+'</h1></div><div class="spin">Chargement…</div>';
+  loadCat(m.cat).then(function(){
+    if(V.name!=='lesson'||V.id!==m.id)return;
+    S.last=m.id;touchDay();
+    var L=LES[m.id];
+    var h='<div class="top"><button class="iconbtn" data-back aria-label="Retour">&larr;</button><h1>'+esc(m.catname)+'</h1><button class="iconbtn'+(S.done[m.id]?' on':'')+'" data-done="'+m.id+'" aria-label="Marquer comme terminée" aria-pressed="'+(!!S.done[m.id])+'">&#10003;</button></div>';
+    h+='<article class="lesson"><div class="crumb">'+(m.k==='c'?'Fiche ':'Chapitre ')+(ORD[m.k].indexOf(m.id)+1)+' sur '+ORD[m.k].length+'</div><h1 class="ltitle">'+esc(m.title)+'</h1><div class="legend"><span class="de">Allemand</span><span class="frc">Français</span></div>';
+    h+='<div class="actions">'+(L.c.length?'<button class="btn" data-lcards="'+m.id+'">Cartes ('+L.c.length+')</button>':'')+(L.q.length?'<button class="btn pri" data-lquiz="'+m.id+'">Quiz ('+L.q.length+')</button>':'')+'</div>';
+    h+=blocks(L.b);
+    var O=ORD[m.k],i=O.indexOf(m.id),pv=LESMETA[O[i-1]],nx=LESMETA[O[i+1]];
+    h+='<div class="actions"><button class="btn wide'+(S.done[m.id]?' good':' pri')+'" data-done="'+m.id+'">'+(S.done[m.id]?'Leçon terminée ✓':'Marquer comme terminée')+'</button></div>';
+    h+='<div class="pager">'+(pv?'<button class="btn" data-lesson="'+pv.id+'" data-replace="1"><small>&larr; Précédente</small>'+esc(pv.title)+'</button>':'')+(nx?'<button class="btn" data-lesson="'+nx.id+'" data-replace="1"><small>Suivante &rarr;</small>'+esc(nx.title)+'</button>':'')+'</div></article>';
+    app.innerHTML=h;
+    if(V.find)findInLesson(V.find);
+  }).catch(function(){app.innerHTML+='<div class="empty">Impossible de charger la leçon. Vérifiez la connexion.</div>';});
+}
+
+function blocks(bs){
+  var h='',inList=false;
+  function closeList(){if(inList){h+='</ul>';inList=false;}}
+  bs.forEach(function(b){
+    if(b.t!=='li')closeList();
+    switch(b.t){
+      case 'h1':case 'h':h+='<h2>'+esc(b.x)+'</h2>';break;
+      case 'h3':h+='<h3>'+esc(b.x)+'</h3>';break;
+      case 'p':h+='<p>'+rich(b.x)+'</p>';break;
+      case 'li':if(!inList){h+='<ul>';inList=true;}h+='<li'+(b.n?' class="num" data-n="'+esc(b.n)+'."':'')+'><span>'+rich(b.x)+'</span></li>';break;
+      case 'kv':h+='<div class="kv"><b>'+esc(b.k)+'</b>'+rich(b.x)+'</div>';break;
+      case 'ex':h+='<div class="ex'+(G('hide')?' hidefr':'')+'"><div class="tx"><span class="de">'+esc(b.de)+'</span>'+(b.fr?'<span class="fr">'+esc(b.fr)+'</span>':'')+'</div>'+speakBtn(b.de)+'</div>';break;
+      case 'tbl':h+=tbl(b.rows);break;
+    }
+  });
+  closeList();return h;
+}
+function colKind(c){var f=fold(c);
+  if(/francais|traduction|sens|signification|bedeutung/.test(f)&&!/exemple allemand/.test(f))return 'fr';
+  if(/allemand|deutsch|infinitif|exemple|expression|verbe|^mot|phrase|forme|nominativ|akkusativ|dativ|genitiv|substantif/.test(f))return 'de';
+  return '';}
+function tbl(rows){
+  var head=rows[0],kind=head.map(colKind);
+  var h='<div class="tbl"><table><thead><tr>'+head.map(function(c){return '<th>'+esc(c)+'</th>';}).join('')+'</tr></thead><tbody>';
+  rows.slice(1).forEach(function(r){h+='<tr>'+r.map(function(c,i){
+    if(kind[i]==='de'&&c)return '<td class="de" data-speak="'+esc(c)+'">'+esc(c)+'</td>';
+    if(kind[i]==='fr'&&c)return '<td class="frc">'+esc(c)+'</td>';
+    return '<td>'+rich(c)+'</td>';}).join('')+'</tr>';});
+  return h+'</tbody></table></div>';
+}
+
+/* ---------- scope picker ---------- */
+function scopeSel(cur,which){
+  var o='<option value="all"'+(cur==='all'?' selected':'')+'>Tout (cours + dictionnaire)</option><option value="kc"'+(cur==='kc'?' selected':'')+'>Tout le cours</option><option value="kd"'+(cur==='kd'?' selected':'')+'>Tout le dictionnaire</option>';
+  ['c','d'].forEach(function(k){o+='<optgroup label="'+(k==='c'?'Cours':'Dictionnaire')+'">';modeCats(k).forEach(function(c){o+='<option value="c'+c.id+'"'+(cur==='c'+c.id?' selected':'')+'>'+(k==='c'?c.id+'. ':'')+esc(c.name)+'</option>';});o+='</optgroup>';});
+  if(cur&&LESMETA[cur]){var m=LESMETA[cur];o='<option value="'+cur+'" selected>Leçon : '+esc(m.title)+'</option>'+o;}
+  return '<div class="scope"><select id="scopesel" data-scope="'+which+'" aria-label="Choisir le contenu">'+o+'</select></div>';
+}
+function poolFor(scope){
+  var ids,need;
+  if(scope==='all'||scope==='kc'||scope==='kd'){ids=scope==='all'?ORDER:scope==='kc'?ORD.c:ORD.d;
+    need=scope==='all'?loadAll():Promise.all(modeCats(scope==='kc'?'c':'d').map(function(c){return loadCat(c.id);}));}
+  else if(!LESMETA[scope]){var cid=+scope.slice(1);ids=META.filter(function(c){return c.id===cid;})[0].lessons.map(function(l){return l.id;});need=loadCat(cid);}
+  else{ids=[scope];need=loadCat(LESMETA[scope].cat);}
+  return need.then(function(){return ids.filter(function(i){return LES[i];}).map(function(i){return LES[i];});});
+}
+
+/* ---------- flashcards ---------- */
+var FC={scope:'all',queue:[],i:0,flip:false,total:0,known:0};
+var INT=[0,1,2,4,8,16,32];
+function vCards(){
+  if(!FC.started){
+    app.innerHTML='<div class="top"><h1>Cartes de vocabulaire</h1><button class="iconbtn" data-dir aria-label="Sens des cartes">'+(S.dir==='de'?'DE→FR':'FR→DE')+'</button></div>'+scopeSel(FC.scope,'cards')+'<div class="spin">Préparation…</div>';
+    poolFor(FC.scope).then(function(P){
+      if(V.name!=='cards')return;
+      var all=[];P.forEach(function(l){l.c.forEach(function(c){all.push(c);});});
+      var now=Date.now(),due=[],fresh=[],n=0;
+      all.forEach(function(c){var s=S.cards[ckey(c[0])];if(!s)fresh.push(c);else if(s.d<=now)due.push(c);});
+      FC.avail={due:due.length,fresh:fresh.length,all:all.length};
+      FC.queue=shuffle(due).concat(shuffle(fresh).slice(0,Math.max(0,G('newc')-due.length))).slice(0,G('newc'));
+      FC.all=all;
+      FC.i=0;FC.flip=false;FC.total=FC.queue.length;FC.known=0;
+      drawCards(true);
+    });
+  }else drawCards(false);
+}
+function drawCards(intro){
+  var head='<div class="top"><h1>Cartes de vocabulaire</h1><button class="iconbtn" data-dir aria-label="Sens des cartes">'+(S.dir==='de'?'DE→FR':'FR→DE')+'</button></div>'+scopeSel(FC.scope,'cards');
+  if(!FC.all||!FC.all.length){app.innerHTML=head+'<div class="empty">Aucune carte dans ce choix.</div>';return;}
+  if(!FC.queue.length||FC.i>=FC.queue.length){
+    app.innerHTML=head+'<div class="score"><b>'+FC.known+' / '+FC.total+'</b>cartes sues pendant cette série</div><div class="actions"><button class="btn pri wide" data-cardsgo="1">Nouvelle série</button><button class="btn wide" data-cardsgo="force">Réviser quand même</button></div><div class="prog"><span>Cartes à revoir : '+(FC.avail?FC.avail.due:0)+'</span><span>Nouvelles : '+(FC.avail?FC.avail.fresh:0)+'</span></div>';
+    FC.started=false;return;
+  }
+  FC.started=true;
+  var c=FC.queue[FC.i],front=S.dir==='de'?c[0]:c[1],backT=S.dir==='de'?c[1]:c[0];
+  var h=head+'<div class="prog"><span>Carte '+(FC.i+1)+' / '+FC.queue.length+'</span><span>'+(S.dir==='de'?'Allemand → Français':'Français → Allemand')+'</span></div>';
+  h+='<div class="fc"><button class="fcard'+(FC.flip?' back':'')+'" data-flip="1" style="width:100%;font:inherit;color:inherit">';
+  if(!FC.flip)h+='<span class="side">'+(S.dir==='de'?'Allemand':'Français')+'</span><span class="big '+(S.dir==='de'?'de':'frc')+'">'+esc(front)+'</span><span class="side">Touchez pour retourner</span>';
+  else h+='<span class="side">'+(S.dir==='de'?'Français':'Allemand')+'</span><span class="big '+(S.dir==='de'?'frc':'de')+'">'+esc(backT)+'</span>';
+  h+='</button></div>';
+  h+='<div class="actions"><button class="btn" data-speak="'+esc(c[0])+'">&#128266; Écouter</button></div>';
+  if(FC.flip)h+='<div class="actions"><button class="btn bad wide" data-grade="0">À revoir</button><button class="btn good wide" data-grade="1">Je savais</button></div>';
+  app.innerHTML=h;
+}
+function grade(ok){
+  var c=FC.queue[FC.i],k=ckey(c[0]),s=S.cards[k]||{b:0,d:0};
+  if(ok){s.b=Math.min(6,s.b+1);FC.known++;}else{s.b=0;FC.queue.push(c);}
+  s.d=Date.now()+INT[s.b]*864e5*(s.b===0?0.0:1);
+  if(!ok)s.d=Date.now()+6e5;
+  S.cards[k]=s;touchDay();FC.i++;FC.flip=false;drawCards(false);
+}
+
+/* ---------- quiz ---------- */
+var Q={scope:'all',qs:[],i:0,score:0,answered:-1,wrong:[],running:false};
+function vQuiz(){
+  if(Q.running){drawQuiz();return;}
+  var head='<div class="top"><h1>Quiz</h1></div>'+scopeSel(Q.scope,'quiz');
+  app.innerHTML=head+'<div class="spin">Préparation…</div>';
+  poolFor(Q.scope).then(function(P){
+    if(V.name!=='quiz')return;
+    var all=[];P.forEach(function(l,idx){l.q.forEach(function(q){all.push(q);});});
+    Q.pool=all;
+    var h=head;
+    if(!all.length)h+='<div class="empty">Aucune question dans ce choix.</div>';
+    else h+='<div class="score"><b>'+Math.min(G('qn'),all.length)+'</b>questions tirées au hasard parmi '+all.length+'</div><div class="actions"><button class="btn pri wide" data-qstart="1">Commencer</button></div><p style="color:var(--muted);font-size:.9rem">Les questions sont générées automatiquement à partir des tableaux et des exemples des fiches : traduction, version, phrase à compléter.</p>';
+    app.innerHTML=h;
+  });
+}
+function qStart(){
+  Q.qs=shuffle(Q.pool).slice(0,G('qn'));Q.i=0;Q.score=0;Q.answered=-1;Q.running=true;Q.opts=null;drawQuiz();
+}
+function drawQuiz(){
+  var head='<div class="top"><button class="iconbtn" data-qquit aria-label="Quitter">&times;</button><h1>Quiz</h1></div>';
+  if(Q.i>=Q.qs.length){
+    var pct=Math.round(Q.score/Q.qs.length*100);
+    if(LESMETA[Q.scope]){var p=S.quiz[Q.scope]||{n:0,best:0};p.n++;p.best=Math.max(p.best,pct);p.last=pct;S.quiz[Q.scope]=p;}
+    S.quiz._all=S.quiz._all||{n:0,sum:0};S.quiz._all.n++;S.quiz._all.sum+=pct;save();touchDay();
+    app.innerHTML=head+'<div class="score"><b>'+Q.score+' / '+Q.qs.length+'</b>'+(pct>=80?'Très bien !':pct>=50?'Bien, continuez.':'À retravailler : relisez la fiche.')+'</div><div class="actions"><button class="btn pri wide" data-qstart="1">Rejouer</button><button class="btn wide" data-qquit>Terminer</button></div>';
+    Q.running=false;Q.done=true;return;
+  }
+  var q=Q.qs[Q.i];
+  if(!Q.opts)Q.opts=q.o.map(function(t,i){return{t:t,c:i===q.a};});
+  var title=q.t==='tr'?'Traduire en français':q.t==='rt'?'Traduire en allemand':'Compléter la phrase';
+  var h=head+'<div class="prog"><span>Question '+(Q.i+1)+' / '+Q.qs.length+'</span><span>Score '+Q.score+'</span></div><div class="q"><div class="qt">'+title+'</div><div class="qq '+(q.t==='rt'?'frc':'de')+'">'+esc(q.q)+'</div>';
+  if(q.t==='cl'&&q.hint)h+='<div class="hint frc">'+esc(q.hint)+'</div>';
+  if(q.t==='tr')h+='<button class="btn" data-speak="'+esc(q.q)+'">&#128266; Écouter</button>';
+  h+='<div class="opts">';
+  Q.opts.forEach(function(o,i){var cl='opt '+(q.t==='tr'?'frc':'de');if(Q.answered>=0){if(o.c)cl+=' ok';else if(i===Q.answered)cl+=' ko';}
+    h+='<button class="'+cl+'" data-opt="'+i+'"'+(Q.answered>=0?' disabled':'')+'>'+esc(o.t)+'</button>';});
+  h+='</div>';
+  if(Q.answered>=0)h+='<button class="btn pri" style="width:100%" data-qnext="1">'+(Q.i+1<Q.qs.length?'Suivante':'Voir le résultat')+'</button>';
+  app.innerHTML=h+'</div>';
+}
+
+
+/* ---------- retrouver le mot cherché dans la leçon ---------- */
+var FND={els:[],i:0};
+function clearFind(){var b=document.getElementById('fbar');if(b)b.remove();document.querySelectorAll('mark.fnd').forEach(function(m){var t=document.createTextNode(m.textContent);m.parentNode.replaceChild(t,m);});FND.els=[];}
+function markIn(root,terms){
+  var done=[];
+  var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:function(n){return n.parentNode.closest('button,script,style,mark.fnd')?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT;}});
+  var nodes=[];while(w.nextNode())nodes.push(w.currentNode);
+  nodes.forEach(function(n){
+    var txt=n.nodeValue,f=fold(txt),ranges=[];
+    terms.forEach(function(t){var p=0,i;while((i=f.indexOf(t,p))>=0){ranges.push([i,i+t.length]);p=i+t.length;}});
+    if(!ranges.length)return;
+    ranges.sort(function(a,b){return a[0]-b[0];});
+    var m=[ranges[0]];for(var k=1;k<ranges.length;k++){var l=m[m.length-1];if(ranges[k][0]<=l[1])l[1]=Math.max(l[1],ranges[k][1]);else m.push(ranges[k]);}
+    var frag=document.createDocumentFragment(),pos=0;
+    m.forEach(function(r){if(r[0]>pos)frag.appendChild(document.createTextNode(txt.slice(pos,r[0])));var mk=document.createElement('mark');mk.className='fnd';mk.textContent=txt.slice(r[0],r[1]);frag.appendChild(mk);done.push(mk);pos=r[1];});
+    if(pos<txt.length)frag.appendChild(document.createTextNode(txt.slice(pos)));
+    n.parentNode.replaceChild(frag,n);
+  });
+  return done;
+}
+function findInLesson(q){
+  clearFind();
+  var art=document.querySelector('article.lesson');if(!art||!q)return;
+  var body=art.querySelectorAll('h2,h3,p,ul,.kv,.ex,table,.tblw');
+  var f=fold(q).trim(),noart=f.replace(/^(der|die|das|ein|eine|to|se|sich) /,'');
+  var tries=[[f],[noart],fold(q).split(/\s+/).filter(function(t){return t.length>2;})];
+  var els=[];
+  for(var a=0;a<tries.length&&!els.length;a++){if(!tries[a].length||(a===1&&noart===f))continue;
+    // essaie d'abord avec tout le texte, sinon mot par mot
+    els=markIn(art,tries[a]);
+    if(els.length&&a===2){/* plusieurs mots : ok */}
+  }
+  var bar=document.createElement('div');bar.id='fbar';
+  bar.style.cssText='position:fixed;left:8px;right:8px;bottom:calc(64px + env(safe-area-inset-bottom,0px));z-index:30;max-width:704px;margin:0 auto;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:0 6px 24px rgba(0,0,0,.2);padding:8px 10px;display:flex;align-items:center;gap:8px;font-size:.9rem';
+  if(!els.length){
+    bar.innerHTML='<span style="flex:1">« '+esc(q)+' » : pas retrouvé dans le texte de cette fiche (il peut se trouver dans les cartes).</span><button class="iconbtn" data-fclose aria-label="Fermer">&times;</button>';
+    document.body.appendChild(bar);return;
+  }
+  FND.els=els;FND.i=0;
+  bar.innerHTML='<span style="flex:1;min-width:0"><b id="fcnt"></b> · « '+esc(q)+' »</span><button class="iconbtn" data-fprev aria-label="Précédent">&uarr;</button><button class="iconbtn" data-fnext aria-label="Suivant">&darr;</button><button class="iconbtn" data-fclose aria-label="Fermer">&times;</button>';
+  document.body.appendChild(bar);
+  showFind(0);
+}
+function showFind(i){
+  var n=FND.els.length;if(!n)return;FND.i=(i+n)%n;
+  FND.els.forEach(function(m,k){m.classList.toggle('cur',k===FND.i);});
+  var c=document.getElementById('fcnt');if(c)c.textContent=(FND.i+1)+' / '+n;
+  var m=FND.els[FND.i];m.scrollIntoView({block:'center',behavior:'smooth'});
+}
+document.addEventListener('click',function(e){
+  var b=e.target.closest('[data-fclose],[data-fprev],[data-fnext]');if(!b)return;
+  e.stopPropagation();
+  if(b.hasAttribute('data-fclose'))return clearFind();
+  showFind(FND.i+(b.hasAttribute('data-fnext')?1:-1));
+},true);
+
+/* ---------- search ---------- */
+var SIX=null,SQ='',DICT=null;
+function buildIndex(){
+  SIX=ORDER.map(function(id){
+    var m=LESMETA[id],L=LES[id],t=[];
+    L.b.forEach(function(b){
+      if(b.t==='tbl')b.rows.forEach(function(r){t.push(plain(r.join(' · ')));});
+      else if(b.t==='ex')t.push(b.de+' — '+b.fr);
+      else if(b.t==='kv')t.push(b.k+' : '+plain(b.x));
+      else t.push(plain(b.x));
+    });
+    return{id:id,title:m.title,ft:fold(m.title),lines:t,fl:t.map(fold)};
+  });
+}
+function vSearch(){
+  var h='<div class="top"><h1>Recherche</h1></div><div class="scope"><input type="search" id="q" placeholder="Mot, règle, titre…" value="'+esc(SQ)+'" autocomplete="off" aria-label="Rechercher dans tout le cours" style="flex:1"></div><div id="res"></div>';
+  app.innerHTML=h;
+  var res=document.getElementById('res');
+  if(!SIX){res.innerHTML='<div class="spin">Chargement du cours et du dictionnaire…</div>';Promise.all([loadAll(),getJSON('data/dict.json').then(function(d){DICT=d.map(function(w){return{de:w[0],fr:w[1],l:w[2],fd:fold(w[0]),ff:fold(w[1])};});})]).then(function(){buildIndex();if(V.name==='search')doSearch();}).catch(function(){res.innerHTML='<div class="empty">Impossible de charger les données. Vérifiez la connexion.</div>';});}
+  else doSearch();
+}
+function hl(s,toks){
+  var out='',f=fold(s),mark=new Array(s.length).fill(false);
+  toks.forEach(function(t){var p=0,i;while((i=f.indexOf(t,p))>=0){for(var k=i;k<i+t.length&&k<s.length;k++)mark[k]=true;p=i+t.length;}});
+  var open=false;
+  for(var k=0;k<s.length;k++){if(mark[k]&&!open){out+='<span class="hl">';open=true;}if(!mark[k]&&open){out+='</span>';open=false;}out+=esc(s[k]);}
+  if(open)out+='</span>';return out;
+}
+function doSearch(){
+  var res=document.getElementById('res');if(!res||!SIX)return;
+  var toks=fold(SQ).split(/\s+/).filter(function(t){return t.length>0;});
+  if(!toks.length){res.innerHTML='<div class="empty">Tapez un mot allemand ou français pour le retrouver dans le cours et le dictionnaire.</div>';return;}
+  var wh=[];
+  if(DICT){
+    var q=toks.join(' ');
+    DICT.forEach(function(w){var sc=-1;
+      if(w.fd===q||w.fd.replace(/^(der|die|das) /,'')===q)sc=0;
+      else if(w.ff===q)sc=1;
+      else if(toks.every(function(t){return w.fd.indexOf(t)>=0;}))sc=2;
+      else if(toks.every(function(t){return w.ff.indexOf(t)>=0;}))sc=3;
+      if(sc>=0)wh.push({w:w,sc:sc});});
+    wh.sort(function(a,b){return a.sc-b.sc||a.w.de.length-b.w.de.length;});
+  }
+  var hits=[];
+  SIX.forEach(function(e){
+    var tm=toks.every(function(t){return e.ft.indexOf(t)>=0;});
+    var best=-1;
+    for(var i=0;i<e.fl.length;i++){if(toks.every(function(t){return e.fl[i].indexOf(t)>=0;})){best=i;break;}}
+    if(best<0&&!tm){var all=e.fl.join(' ');if(!toks.every(function(t){return all.indexOf(t)>=0;}))return;}
+    hits.push({e:e,tm:tm,line:best});
+  });
+  hits.sort(function(a,b){return (b.tm-a.tm)||((b.line>=0)-(a.line>=0));});
+  var h='';
+  if(wh.length){h+='<div class="sec">Mots du dictionnaire · '+wh.length+(wh.length>25?' (25 premiers)':'')+'</div><div class="list">';
+    wh.slice(0,25).forEach(function(x){h+='<div class="row"><span class="t" data-lesson="'+x.w.l+'" data-find="'+esc(x.w.de)+'" style="cursor:pointer"><b class="de">'+hl(x.w.de,toks)+'</b><div class="frc">'+hl(x.w.fr,toks)+'</div><button class="snip" style="background:none;border:0;padding:0;text-align:left;text-decoration:underline" data-lesson="'+x.w.l+'" data-find="'+esc(x.w.de)+'">📍 '+esc(LESMETA[x.w.l].title)+'</button></span><button class="spk" data-speak="'+esc(x.w.de)+'" aria-label="Écouter">&#128266;</button></div>';});
+    h+='</div>';}
+  h+='<div class="sec">Fiches · '+hits.length+' résultat'+(hits.length>1?'s':'')+(hits.length>40?' (40 premiers)':'')+'</div><div class="list">';
+  hits.slice(0,40).forEach(function(x){
+    var sn=x.line>=0?x.e.lines[x.line]:'';
+    if(sn.length>150)sn=sn.slice(0,150)+'…';
+    h+='<button class="row" data-lesson="'+x.e.id+'" data-find="'+esc(SQ.trim())+'"><span class="t"><b>'+hl(x.e.title,toks)+'</b>'+(sn?'<div class="snip">'+hl(sn,toks)+'</div>':'')+'<small>'+esc(LESMETA[x.e.id].catname)+'</small></span><span class="chev">&rsaquo;</span></button>';});
+  res.innerHTML=h+'</div>';
+}
+
+/* ---------- progress ---------- */
+function vProg(){
+  var qa=S.quiz._all,h='<div class="top"><h1>Progrès</h1></div>';
+  var dc=ORD.c.filter(function(i){return S.done[i];}).length,dd=ORD.d.filter(function(i){return S.done[i];}).length;
+  h+='<div class="stats"><div class="stat"><b>'+Math.round(dc/ORD.c.length*100)+'%</b><span>du cours</span></div><div class="stat"><b>'+Math.round(dd/ORD.d.length*100)+'%</b><span>du dictionnaire</span></div><div class="stat"><b>'+(qa?Math.round(qa.sum/qa.n)+'%':'—')+'</b><span>moyenne aux quiz</span></div></div>';
+  h+='<div class="stats"><div class="stat"><b>'+streak()+'</b><span>jours de suite</span></div><div class="stat"><b>'+learned()+'</b><span>cartes apprises</span></div><div class="stat"><b>'+Object.keys(S.days).length+'</b><span>jours d’étude</span></div></div>';
+  ['c','d'].forEach(function(k){
+    h+='<div class="sec">'+(k==='c'?'Cours par catégorie':'Dictionnaire par catégorie')+'</div><div class="pbar">';
+    modeCats(k).forEach(function(c){var d=doneCount(c),n=c.lessons.length;h+='<div><div class="l"><span>'+(k==='c'?c.id+'. ':'')+esc(c.name)+'</span><span>'+d+'/'+n+'</span></div><div class="bar"><i style="width:'+Math.round(d/n*100)+'%"></i></div></div>';});
+    h+='</div>';});
+  h+='<div class="actions" style="margin-top:24px"><button class="btn" data-reset="1">Effacer ma progression</button></div>';
+  app.innerHTML=h;
+}
+
+/* ---------- settings ---------- */
+function seg(key,opts){return '<div class="seg" role="group">'+opts.map(function(o){return '<button data-set="'+key+'" data-v="'+o[0]+'" aria-pressed="'+(String(G(key))===String(o[0]))+'" aria-selected="'+(String(G(key))===String(o[0]))+'">'+o[1]+'</button>';}).join('')+'</div>';}
+function vSet(){
+  var h='<div class="top"><h1>Réglages</h1></div>';
+  h+='<div class="sec">Contact</div><div class="setc"><b>NTAKARUTIMANA Marc</b><div class="crow"><a href="tel:+25768044030">+257 68 04 40 30</a><button class="btn" data-copy="+25768044030">Copier</button></div><div class="crow"><a href="mailto:marcntakarutimana1995@gmail.com">marcntakarutimana1995@gmail.com</a><button class="btn" data-copy="marcntakarutimana1995@gmail.com">Copier</button></div><small>Une remarque, une erreur dans une fiche ? Écrivez à l’auteur.</small></div>';
+  h+='<div class="sec">À propos de l’application</div><div class="setc"><b>Allemand 0 → B2</b><p style="margin:0">Une méthode complète pour apprendre l’allemand en français, du niveau débutant au niveau B2. L’application réunit 249 fiches de cours (alphabet, articles et cas, verbes, prépositions, conjonctions, subjonctif, passif, vocabulaire thématique, expression orale et écrite) et 86 chapitres de dictionnaire thématique allemand–français. La rubrique Verbes réunit 673 verbes conjugués à tous les temps, avec un guide de conjugaison, des favoris et un entraînement.</p><p style="margin:0">Lisez les leçons, écoutez les mots et les phrases, retrouvez n’importe quel mot grâce à la recherche, révisez avec environ 22 000 cartes de vocabulaire et testez-vous avec plus de 3 500 questions de quiz. Votre progression est enregistrée sur votre téléphone, et vous réglez le thème, la taille du texte et l’audio à votre convenance.</p></div>';
+  h+='<div class="sec">Profil</div><div class="setc"><b>Ton prénom</b><input type="search" id="nm" placeholder="Prénom (affiché sur l’accueil)" value="'+esc(G('name')||'')+'" aria-label="Prénom"></div>';
+  h+='<div class="sec">Affichage</div><div class="setc"><b>Thème</b>'+seg('theme',[['auto','Auto'],['light','Clair'],['dark','Sombre']])+'<small>Auto suit le réglage de votre téléphone.</small></div>';
+  h+='<div class="setc"><b>Taille du texte <span id="fsv">'+G('fs')+' %</span></b><input type="range" id="fsr" min="80" max="160" step="5" value="'+G('fs')+'" aria-label="Taille du texte"><div class="fsrow"><span>A</span><span style="font-size:1.4em">A</span></div><p class="demo">Ich lerne Deutsch. <span style="color:var(--muted)">J’apprends l’allemand.</span></p></div>';
+  h+='<div class="setc"><b>Interligne</b>'+seg('lh',[[1.35,'Serré'],[1.5,'Normal'],[1.75,'Aéré']])+'</div>';
+  h+='<div class="sec">Étude</div><div class="setc"><b>Traductions des exemples</b>'+seg('hide',[['false','Toujours visibles'],['true','Cachées (toucher)']])+'<small>Cachées : cachez le français, devinez, puis touchez l’exemple pour vérifier.</small></div>';
+  h+='<div class="setc"><b>Cartes par série</b>'+seg('newc',[[10,'10'],[20,'20'],[40,'40']])+'</div>';
+  h+='<div class="setc"><b>Questions par quiz</b>'+seg('qn',[[5,'5'],[10,'10'],[20,'20']])+'</div>';
+  h+='<div class="setc"><b>Sens des cartes</b>'+seg('dirx',[['de','Allemand → Français'],['fr','Français → Allemand']])+'</div>';
+  h+='<div class="sec">Audio</div><div class="setc"><b>Vitesse de lecture</b>'+seg('rate',[[0.6,'Lente'],[0.9,'Normale'],[1.1,'Rapide']])+'<div class="actions"><button class="btn" data-speak="Guten Tag! Wie geht es Ihnen?">&#128266; Tester la voix</button></div></div>';
+  h+='<div class="sec">Sauvegarde</div><div class="setc"><b>Copier / restaurer ma progression</b><small>Utile pour changer de téléphone : copiez le texte, puis collez-le sur l’autre appareil.</small><div class="actions"><button class="btn" data-backup="copy">Copier ma sauvegarde</button></div><textarea id="bk" rows="3" placeholder="Collez ici une sauvegarde pour la restaurer" aria-label="Sauvegarde"></textarea><div class="actions"><button class="btn" data-backup="restore">Restaurer</button></div></div>';
+  h+='<div class="sec">Données</div><div class="actions"><button class="btn" data-setreset="1">Rétablir les réglages</button><button class="btn" data-reset="1">Effacer ma progression</button></div>';
+  app.innerHTML=h;
+}
+/* ---------- events ---------- */
+document.addEventListener('click',function(e){
+  var t=e.target.closest('[data-tab],[data-cat],[data-lesson],[data-back],[data-done],[data-speak],[data-lcards],[data-lquiz],[data-flip],[data-grade],[data-dir],[data-cardsgo],[data-qstart],[data-qquit],[data-opt],[data-qnext],[data-reset],[data-mode],[data-copy],[data-set],[data-backup],[data-setreset],[data-copy],.ex.hidefr');
+  if(!t)return;
+  var d=t.dataset;
+  if(t.classList.contains('hidefr')&&!e.target.closest('.spk')){t.classList.toggle('show');return;}
+  if(d.set){var v=d.v;if(d.set==='dirx'){S.dir=v;save();return render();}
+    if(v==='true')v=true;else if(v==='false')v=false;else if(!isNaN(+v))v=+v;
+    S.set[d.set]=v;save();applySettings();return render();}
+  if(d.copy){try{navigator.clipboard.writeText(d.copy).then(function(){toast('Copié');},function(){toast(d.copy);});}catch(er){toast(d.copy);}return;}
+  if(d.setreset){S.set={};save();applySettings();toast('Réglages rétablis');return render();}
+  if(d.backup==='copy'){var txt=JSON.stringify({v:1,done:S.done,cards:S.cards,quiz:S.quiz,days:S.days,last:S.last,set:S.set,fav:S.fav||{}});
+    var ta=document.getElementById('bk');ta.value=txt;ta.focus();ta.select();
+    try{navigator.clipboard.writeText(txt).then(function(){toast('Sauvegarde copiée');},function(){toast('Texte sélectionné : copiez-le manuellement');});}catch(er){toast('Texte sélectionné : copiez-le manuellement');}return;}
+  if(d.backup==='restore'){try{var o=JSON.parse(document.getElementById('bk').value);if(!o||o.v!==1)throw 0;['done','cards','quiz','days','last','set','fav'].forEach(function(k){if(o[k]!==undefined)S[k]=o[k];});save();applySettings();toast('Progression restaurée');render();}catch(er){toast('Sauvegarde non valide.');}return;}
+  if(d.mode){S.mode=d.mode;save();return render();}
+  if(d.tab)return tab(d.tab);
+  if(d.cat)return go({name:'cat',id:+d.cat});
+  if(d.lesson){if(d.replace){nav.pop();return go({name:'lesson',id:d.lesson},true);}return go({name:'lesson',id:d.lesson,find:d.find||''});}
+  if('back' in d)return back();
+  if(d.done){var id=d.done;if(S.done[id])delete S.done[id];else{S.done[id]=1;touchDay();toast('Leçon terminée');}save();return render();}
+  if(d.speak!==undefined)return speak(d.speak);
+  if(d.lcards){FC.scope=d.lcards;FC.started=false;nav.push(V);V={name:'cards'};return render();}
+  if(d.lquiz){Q.scope=d.lquiz;Q.running=false;nav.push(V);V={name:'quiz'};return render();}
+  if('flip' in d){FC.flip=!FC.flip;return drawCards(false);}
+  if(d.grade!==undefined)return grade(d.grade==='1');
+  if('dir' in d){S.dir=S.dir==='de'?'fr':'de';save();return drawCards(false);}
+  if(d.cardsgo){if(d.cardsgo==='force'){var all=shuffle(FC.all).slice(0,G('newc'));FC.queue=all;FC.i=0;FC.flip=false;FC.total=all.length;FC.known=0;FC.started=true;return drawCards(false);}FC.started=false;return vCards();}
+  if(d.qstart)return qStart();
+  if('qquit' in d){Q.running=false;if(nav.length&&nav[nav.length-1].name==='lesson')return back();return vQuiz();}
+  if(d.opt!==undefined&&Q.answered<0){Q.answered=+d.opt;if(Q.opts[Q.answered].c)Q.score++;return drawQuiz();}
+  if(d.qnext){Q.i++;Q.answered=-1;Q.opts=null;return drawQuiz();}
+  if(d.reset){S.fav={};S.done={};S.cards={};S.quiz={};S.days={};S.last=null;save();toast('Progression effacée');return render();}
+});
+document.addEventListener('change',function(e){
+  var s=e.target.closest('#scopesel');if(!s)return;
+  if(s.dataset.scope==='cards'){FC.scope=s.value;FC.started=false;vCards();}
+  else{Q.scope=s.value;Q.running=false;vQuiz();}
+});
+document.addEventListener('input',function(e){if(e.target.id==='q'){SQ=e.target.value;doSearch();}
+  if(e.target.id==='fsr'){S.set.fs=+e.target.value;applySettings();document.getElementById('fsv').textContent=e.target.value+' %';}});
+document.addEventListener('change',function(e){if(e.target.id==='fsr')save();});
+
+/* ---------- RUBRIQUE VERBES ---------- */
+/* Moteur de conjugaison allemande */
+var DEC=(function(){
+var IRR={};
+// inf:changement(er):prät:pp:aux(s=sein)
+('backen:bäck:backte:gebacken|befehlen:befiehl:befahl:befohlen|beginnen::begann:begonnen|beißen::biss:gebissen|bieten::bot:geboten|binden::band:gebunden|bitten::bat:gebeten|blasen:bläs:blies:geblasen|bleiben::blieb:geblieben:s|braten:brät:briet:gebraten|brechen:brich:brach:gebrochen|brennen::brannte:gebrannt|bringen::brachte:gebracht|denken::dachte:gedacht|dringen::drang:gedrungen:s|empfehlen:empfiehl:empfahl:empfohlen|erschrecken:erschrick:erschrak:erschrocken:s|essen:iss:aß:gegessen|fahren:fähr:fuhr:gefahren:s|fallen:fäll:fiel:gefallen:s|fangen:fäng:fing:gefangen|finden::fand:gefunden|fliegen::flog:geflogen:s|fliehen::floh:geflohen:s|fließen::floss:geflossen:s|fressen:friss:fraß:gefressen|frieren::fror:gefroren|geben:gib:gab:gegeben|gehen::ging:gegangen:s|gelingen::gelang:gelungen:s|gelten:gilt:galt:gegolten|genießen::genoss:genossen|geschehen:geschieh:geschah:geschehen:s|gewinnen::gewann:gewonnen|gießen::goss:gegossen|graben:gräb:grub:gegraben|greifen::griff:gegriffen|halten:hält:hielt:gehalten|hängen::hing:gehangen|heben::hob:gehoben|heißen::hieß:geheißen|helfen:hilf:half:geholfen|kennen::kannte:gekannt|klingen::klang:geklungen|kommen::kam:gekommen:s|kriechen::kroch:gekrochen:s|laden:läd:lud:geladen|lassen:läss:ließ:gelassen|laufen:läuf:lief:gelaufen:s|leiden::litt:gelitten|leihen::lieh:geliehen|lesen:lies:las:gelesen|liegen::lag:gelegen|lügen::log:gelogen|meiden::mied:gemieden|messen:miss:maß:gemessen|nehmen:nimm:nahm:genommen|nennen::nannte:genannt|pfeifen::pfiff:gepfiffen|raten:rät:riet:geraten|reiben::rieb:gerieben|reißen::riss:gerissen|reiten::ritt:geritten:s|rennen::rannte:gerannt:s|riechen::roch:gerochen|ringen::rang:gerungen|rufen::rief:gerufen|scheiden::schied:geschieden|scheinen::schien:geschienen|schieben::schob:geschoben|schießen::schoss:geschossen|schlafen:schläf:schlief:geschlafen|schlagen:schläg:schlug:geschlagen|schleichen::schlich:geschlichen:s|schließen::schloss:geschlossen|schmeißen::schmiss:geschmissen|schmelzen:schmilz:schmolz:geschmolzen:s|schneiden::schnitt:geschnitten|schreiben::schrieb:geschrieben|schreien::schrie:geschrien|schreiten::schritt:geschritten:s|schweigen::schwieg:geschwiegen|schwimmen::schwamm:geschwommen:s|schwingen::schwang:geschwungen|schwören::schwor:geschworen|sehen:sieh:sah:gesehen|senden::sandte:gesandt|singen::sang:gesungen|sinken::sank:gesunken:s|sitzen::saß:gesessen|sprechen:sprich:sprach:gesprochen|springen::sprang:gesprungen:s|stechen:stich:stach:gestochen|stehen::stand:gestanden|stehlen:stiehl:stahl:gestohlen|steigen::stieg:gestiegen:s|sterben:stirb:starb:gestorben:s|stoßen:stöß:stieß:gestoßen|streichen::strich:gestrichen|streiten::stritt:gestritten|tragen:träg:trug:getragen|treffen:triff:traf:getroffen|treiben::trieb:getrieben|treten:tritt:trat:getreten|trinken::trank:getrunken|tun::tat:getan|verderben:verdirb:verdarb:verdorben|vergessen:vergiss:vergaß:vergessen|verlieren::verlor:verloren|wachsen:wächs:wuchs:gewachsen:s|waschen:wäsch:wusch:gewaschen|weisen::wies:gewiesen|wenden::wandte:gewandt|werben:wirb:warb:geworben|werfen:wirf:warf:geworfen|wiegen::wog:gewogen|ziehen::zog:gezogen|zwingen::zwang:gezwungen|können:kann:konnte:gekonnt|müssen:muss:musste:gemusst|dürfen:darf:durfte:gedurft|sollen:soll:sollte:gesollt|wollen:will:wollte:gewollt|mögen:mag:mochte:gemocht|wissen:weiß:wusste:gewusst|möchten:möchte:wollte:gewollt|bewegen::bewegte:bewegt|erlöschen:erlisch:erlosch:erloschen:s|wringen::wrang:gewrungen|saugen::sog:gesogen|schaffen::schaffte:geschafft|schwellen:schwill:schwoll:geschwollen:s|sieden::sott:gesotten|spinnen::spann:gesponnen|sprießen::spross:gesprossen:s|stinken::stank:gestunken|streiten::stritt:gestritten|trügen::trog:getrogen|verzeihen::verzieh:verziehen|wählen::wählte:gewählt|winden::wand:gewunden|gleiten::glitt:geglitten:s|gleichen::glich:geglichen|glimmen::glomm:geglommen|klimmen::klomm:geklommen|kneifen::kniff:gekniffen|quellen:quill:quoll:gequollen:s|rinnen::rann:geronnen:s|schallen::scholl:geschallt|schinden::schund:geschunden|schnauben::schnob:geschnoben|schrecken:schrick:schrak:geschrocken|schwinden::schwand:geschwunden:s|schwören::schwor:geschworen|stieben::stob:gestoben|tun::tat:getan').split('|').forEach(function(s){var a=s.split(':');IRR[a[0]]={c:a[1],pt:a[2],pp:a[3],aux:a[4]==='s'?'sein':'haben'};});
+var SEP='ab,an,auf,aus,bei,ein,fest,fort,her,hin,los,mit,nach,vor,weg,zu,zurück,zusammen,statt,teil,weiter,vorbei,heraus,hinaus,herein,hinein,herunter,hinunter,hinauf,herauf,voran,umher,empor,dar,frei,fern,gut,kennen,spazieren,rad,wieder,heim,nieder,um,durch,über,unter'.split(',').sort(function(a,b){return b.length-a.length;});
+var SEPYES={wiederverwenden:1,zurückerstatten:1,umziehen:1,umsteigen:1,umdrehen:1,umbauen:1,umtauschen:1,umschalten:1,umbenennen:1,umrechnen:1,umgehen:0,durchfallen:1,durchführen:1,durchlesen:1,durchsehen:1,überlaufen:0,überziehen:1,übersetzen:0,überfahren:0,unterbringen:1,unterhalten:0,wiederholen:0,wiedersehen:1,wiederkommen:1,überweisen:0,übernehmen:0,überwinden:0,überraschen:0,übertreiben:0,übertragen:0,überzeugen:0,übersehen:0,unterscheiden:0,unterrichten:0,unterschreiben:0,unterstützen:0,untersuchen:0,unterbrechen:0,umarmen:0,umgeben:0,durchsetzen:0,umfahren:0,überprüfen:0,überlegen:0,überleben:0,überqueren:0,überholen:0,übernachten:0,übertreffen:0,unterhalten:0,unterstreichen:0,umfassen:0,umschreiben:0,durchschauen:0,durchsuchen:0,wiedergeben:1,wiedersehen:1,überbieten:0,unterlassen:0,unternehmen:0,unterstellen:0};
+var INSEP='be,ge,er,ent,emp,ver,zer,miss'.split(',');
+var SEIN={reisen:1,wandern:1,passieren:1,begegnen:1,folgen:1,landen:1,aufwachen:1,verreisen:1,ertrinken:1,erscheinen:1,verschwinden:1,entstehen:1,erwachen:1,entkommen:1,geschehen:1,gelingen:1,misslingen:1,einschlafen:1,aufstehen:1,umziehen:1,eintreten:1,aussterben:1,erfrieren:1,verblühen:1,verfaulen:1,ankommen:1,abreisen:1,einziehen:1,ausziehen:0,auftreten:1,eintreffen:1,fehlschlagen:1,bleiben:1,sein:1,werden:1,begegnen:1,wachsen:1,verfallen:1,zurückkehren:1,zurückkommen:1,zurückgehen:1,zurückfahren:1,heimkehren:1,umkippen:1,einschlafen:1,sterben:1,aufwachsen:1,erschrecken:1,steigen:1,fallen:1,sinken:1};
+var NOEINS={};
+var NOSEP={antworten:1,hindern:1,beten:1,bessern:1,bellen:1,beben:1,erben:1,analysieren:1,anfeuern:1,anschauen:0};
+var INSEP='über,unter,hinter,wieder,wider,voll,be,ge,er,ent,emp,ver,zer,miss'.split(',');
+var NOIRR=/^(wenden|senden)$/;
+function split(inf){
+  var i,p,rest;
+  if(IRR[inf]||inf==='sein'||inf==='haben'||inf==='werden'||NOSEP[inf])return{p:'',t:'',b:inf};
+  if(SEPYES.hasOwnProperty(inf)&&SEPYES[inf]){for(i=0;i<SEP.length;i++)if(inf.indexOf(SEP[i])===0&&inf.length>SEP[i].length+3)return{p:SEP[i],t:'s',b:inf.slice(SEP[i].length)};}
+  if(!(SEPYES.hasOwnProperty(inf)&&!SEPYES[inf])){
+    for(i=0;i<SEP.length;i++){p=SEP[i];if(['über','unter','wieder'].indexOf(p)>=0)continue;if(inf.indexOf(p)===0&&inf.length>p.length+3){rest=inf.slice(p.length);if(IRR[rest]||/(en|ern|eln)$/.test(rest))return{p:p,t:'s',b:rest};}}
+  }
+  for(i=0;i<INSEP.length;i++){p=INSEP[i];if(inf.indexOf(p)===0&&inf.length>p.length+3){rest=inf.slice(p.length);if(IRR[rest])return{p:p,t:'i',b:rest};return{p:p,t:'i',b:inf,ins:1};}}
+  for(i=0;i<SEP.length;i++){p=SEP[i];if(inf.indexOf(p)===0&&SEPYES.hasOwnProperty(inf)&&!SEPYES[inf]&&inf.length>p.length+3){rest=inf.slice(p.length);return IRR[rest]?{p:p,t:'i',b:rest}:{p:p,t:'i',b:inf,ins:1};}}
+  return{p:'',t:'',b:inf};
+}
+function stemOf(b){return /(eln|ern)$/.test(b)?b.slice(0,-1):b.replace(/en$/,'');}
+function eIns(st){return /[dt]$/.test(st)||/(?:[bcdfgkpt]|ch)[mn]$/.test(st);}
+function umlaut(s){var m=s.match(/^(.*?)(au|a|o|u)([^aouäöü]*)$/);if(!m)return s;var v={au:'äu',a:'ä',o:'ö',u:'ü'}[m[2]];return m[1]+v+m[3];}
+// description complète d'un verbe
+function describe(inf,over){
+  over=over||{};var refl=0,dat=0;if(inf.indexOf('sich ')===0){refl=1;inf=inf.slice(5);}
+  var sp=split(inf),root=sp.t==='s'?sp.b:inf,inner=sp.t==='s'?split(root):sp,base=root,I;
+  if(inner.t==='i'&&inner.p&&IRR[inner.b]&&!NOIRR.test(inner.b)){var J=IRR[inner.b];I={c:J.c?inner.p+J.c:'',pt:inner.p+J.pt,pp:inner.p+J.pp.replace(/^ge/,''),aux:J.aux};}
+  else if(inner.t!=='i')I=IRR[root];
+  if(sp.p&&NOIRR.test(root))I=undefined;
+  if(root==='hängen'&&sp.p&&!/^(ab|zusammen)$/.test(sp.p))I=undefined;
+  var isein=base==='sein',ihab=base==='haben',iwer=base==='werden';
+  var d={inf:inf,refl:refl,sep:sp.t==='s'?sp.p:'',insep:inner.t==='i'?inner.p:'',base:base,kind:'faible'};
+  var stem=stemOf(base),c='',pt,pp,aux='haben',strong=false;
+  if(isein){d.kind='auxiliaire';aux='sein';pt='war';pp='gewesen';}
+  else if(ihab){d.kind='auxiliaire';pt='hatte';pp='gehabt';}
+  else if(iwer){d.kind='auxiliaire';aux='sein';pt='wurde';pp='geworden';}
+  else if(I){c=I.c;pt=I.pt;pp=I.pp;aux=I.aux;strong=!/te$/.test(pt);d.kind=/^(können|müssen|dürfen|sollen|wollen|mögen|möchten)$/.test(base)?'modal':(strong?'fort':'mixte');}
+  else{pt=null;pp=null;}
+  d.chg=c;d.aux=SEIN[inf]?'sein':(sp.t==='i'&&!I?(SEIN[inf]?'sein':'haben'):aux);
+  if(sp.t==='i'&&I&&!SEIN[inf])d.aux='haben'; if(SEIN[inf])d.aux='sein';
+  if(over.aux)d.aux=over.aux;
+  d.stem=stem;d.ei=eIns(stem);
+  // Präteritum & Partizip II
+  var ptb=pt;if(!pt){ptb=stem+(d.ei?'ete':'te');}
+  d.ptb=over.pt&&!sp.p?over.pt:ptb;
+  var ppb=pp;
+  var noGe=inner.t==='i'||/ieren$/.test(base)||(sp.t==='s'&&inner.t==='i');
+  if(!pp){ppb=(noGe?'':'ge')+stem+(d.ei?'et':'t');}
+  
+
+  d.pt=(sp.t==='s'?'':'')+(over.pt&&!sp.p?over.pt:ptb);
+  d.pp=over.pp&&!sp.p?over.pp:(sp.t==='s'?sp.p+ppb:ppb);
+  if(over.pp&&sp.p)d.pp=over.pp;
+  if(over.pt&&sp.p)d.pt=over.pt.replace(new RegExp('^'+sp.p),'');
+  d.strong=!/e$/.test(d.pt)&&!/^(war)$/.test(d.pt)?1:0;
+  return d;
+}
+var PRON=['ich','du','er/sie/es','wir','ihr','sie/Sie'];
+var RP={akk:['mich','dich','sich','uns','euch','sich'],dat:['mir','dir','sich','uns','euch','sich']};
+function pres(d){
+  var b=d.base,st=d.stem,f;
+  if(b==='sein')f=['bin','bist','ist','sind','seid','sind'];
+  else if(b==='haben')f=['habe','hast','hat','haben','habt','haben'];
+  else if(b==='werden')f=['werde','wirst','wird','werden','werdet','werden'];
+  else if(b==='tun')f=['tue','tust','tut','tun','tut','tun'];
+  else if(/^(können|müssen|dürfen|sollen|wollen|mögen|wissen)$/.test(b)){var s=d.chg,p=b==='mögen'?'mög':b==='können'?'könn':b==='müssen'?'müss':b==='dürfen'?'dürf':b==='sollen'?'soll':b==='wollen'?'woll':'wiss';f=[s,b==='wissen'?'weißt':(b==='sollen'||b==='wollen'?s+'st':s+'st'),s,b,b==='wissen'?'wisst':p.replace(/[äöü]/g,function(x){return{ä:'a',ö:'o',ü:'u'}[x];})+'t',b];
+    if(b==='können')f=['kann','kannst','kann','können','könnt','können'];if(b==='müssen')f=['muss','musst','muss','müssen','müsst','müssen'];if(b==='dürfen')f=['darf','darfst','darf','dürfen','dürft','dürfen'];if(b==='sollen')f=['soll','sollst','soll','sollen','sollt','sollen'];if(b==='wollen')f=['will','willst','will','wollen','wollt','wollen'];if(b==='mögen')f=['mag','magst','mag','mögen','mögt','mögen'];if(b==='wissen')f=['weiß','weißt','weiß','wissen','wisst','wissen'];}
+  else if(b==='möchten')f=['möchte','möchtest','möchte','möchten','möchtet','möchten'];
+  else{
+    var ich,du,er,wir=b,ihr,sie=b,c=d.chg;
+    if(/eln$/.test(b)){ich=st.slice(0,-2)+'le';}else if(/ern$/.test(b)){ich=st+'e';}else ich=st+'e';
+    var base2=/(eln|ern)$/.test(b)?st:st;
+    var ee=d.ei?'e':'';
+    var stc=c||st;
+    if(c){er=/t$/.test(c)?c:(/[sßxz]$/.test(c)&&false?c:c+'t');if(/[sßxz]$/.test(c))er=c+'t';
+      if(/[sßxz]$/.test(c)){du=c+'t';}else if(/t$/.test(c)){du=c+'st';}else du=c+'st';
+      if(c==='gilt'||c==='tritt'||c==='hält'||c==='rät'||c==='brät')er=c;
+      if(c==='geschieh'){du=c+'st';}
+    }else{
+      er=st+ee+'t';du=/[sßxz]$/.test(st)?st+'t':st+ee+'st';
+    }
+    if(/eln$/.test(b)){ich=st.slice(0,-2)+'le';er=st+'t';du=st+'st';}
+    if(/ern$/.test(b)){er=st+'t';du=st+'st';ich=st+'e';}
+    if(/(eln|ern)$/.test(b)){ihr=st+'t';}else ihr=st+ee+'t';
+    f=[ich,du,er,wir,ihr,sie];
+    if(b==='essen'||b==='fressen'||b==='messen'||b==='vergessen'){f[1]=c+'t';}
+    if(c==='gilt'){f[0]='gelte';}
+  }
+  return f;
+}
+function pastF(p){ // Präteritum: forme de base -> 6 personnes
+  var f;
+  if(p==='war')f=['war','warst','war','waren','wart','waren'];
+  else if(/e$/.test(p))f=[p,p+'st',p,p+'n',p+'t',p+'n'];
+  else{var e=/[dtsßxz]$/.test(p)?'e':'';f=[p,p+e+'st',p,p+'en',p+(/[dt]$/.test(p)?'e':'')+'t',p+'en'];if(/[sßxz]$/.test(p))f[4]=p+'t';}
+  return f;
+}
+function k2base(d){
+  var b=d.base,p=d.ptb;
+  if(b==='sein')return'wäre';if(b==='haben')return'hätte';if(b==='werden')return'würde';
+  if(b==='mögen'||b==='möchten')return'möchte';
+  if(/(sollen|wollen|kennen|nennen|rennen|brennen|senden|wenden)$/.test(b))return p.replace(/e?$/,'e');
+  if(d.kind==='faible')return null;
+  var u=umlaut(p);if(!/e$/.test(u))u+='e';return u;
+}
+function conj(d){
+  var pr=pres(d),pt=pastF(d.ptb),sep=d.sep,R=d.refl?(d.dat?RP.dat:RP.akk):null;
+  function S(f,i){var t=f[i];if(R)t+=' '+R[i];if(sep)t+=' '+sep;return t;}
+  function SN(f,i){var t=f[i];if(R)t+=' '+R[i];return t;}
+  var out={presens:[],preterit:[],perfekt:[],plus:[],futur:[],futur2:[],k2:[],imp:[]};
+  var auxP=d.aux==='sein'?['bin','bist','ist','sind','seid','sind']:['habe','hast','hat','haben','habt','haben'];
+  var auxT=d.aux==='sein'?pastF('war'):pastF('hatte');
+  var wP=['werde','wirst','wird','werden','werdet','werden'];
+  var k2=k2base(d),k2f=k2?pastF(k2):null,wk=pastF('würde');
+  var inf=(d.refl?'sich ':'')+d.inf.replace(/^sich /,'');
+  for(var i=0;i<6;i++){
+    var rp=R?' '+R[i]:'';
+    // sujet-verbe-(réfl)-(préfixe)
+    out.presens.push(pr[i]+rp+(sep?' '+sep:''));
+    out.preterit.push(pt[i]+rp+(sep?' '+sep:''));
+    var ppw=d.pp;
+    out.perfekt.push(auxP[i]+rp+' '+ppw);
+    out.plus.push(auxT[i]+rp+' '+ppw);
+    var infs=(R?R[i]+' ':'')+d.inf;
+    out.futur.push(wP[i]+' '+infs);
+    out.futur2.push(wP[i]+rp+' '+ppw+' '+(d.aux==='sein'?'sein':'haben'));
+    out.k2.push(k2f?(k2f[i]+rp+(sep?' '+sep:'')):'—');
+    out.k2.push;
+  }
+  out.wk=wk.map(function(w,i){return w+' '+(R?R[i]+' ':'')+d.inf;});
+  // impératif
+  var b=d.base,st=d.stem,du;
+  if(b==='sein')du='sei';else if(b==='haben')du='hab(e)';else if(b==='werden')du='werde';else if(b==='wissen')du='wisse';else if(b==='tun')du='tu(e)';
+  else if(d.chg&&/i(e)?[a-zß]*$/.test(d.chg)&&!/[äö]/.test(d.chg)&&d.kind!=='modal'&&!/^(gilt|tritt|hält|rät|brät|läd|schmilz)$/.test(d.chg))du=d.chg.replace(/t$/,'');
+  else if(/(eln|ern)$/.test(b))du=/eln$/.test(b)?st.slice(0,-2)+'le':st+'e';
+  else du=d.ei?st+'e':st;
+  var ihr=pr[4],R2=d.refl?(d.dat?['dir','euch','sich']:['dich','euch','sich']):['','',''];
+  if(d.kind==='modal'||b==='möchten'){out.imp=null;}
+  else{
+    var s=sep?' '+sep:'';
+    out.imp=[du+(R?' '+R2[0]:'')+s,(b==='sein'?'seid':ihr)+(R?' '+R2[1]:'')+s,(b==='sein'?'seien':d.inf.replace(/^sich /,''))+' Sie'+(R?' sich':'')+s];
+  }
+  var pi=d.inf.replace(/^sich /,'');
+  out.part1=pi+'d'; if(b==='sein')out.part1='seiend';
+  out.k2syn=!!k2;
+  return out;
+}
+return {describe:describe,conj:conj,IRR:IRR};
+})();
+
+
+var VB=null,VBI={},VF={q:'',f:'all',n:80,letter:''},VP={};
+function loadVerbs(){return VB?Promise.resolve(VB):getJSON('data/verbs.json').then(function(a){VB=a;a.forEach(function(v,i){v.k0=fold(v.i.replace(/^sich /,''));v.ff=fold(v.f);VBI[v.i]=i;});return VB;});}
+function segHtml(k){return '<div class="seg" role="tablist">'+[['c','Cours'],['d','Dictionnaire'],['v','Verbes']].map(function(m){return '<button data-mode="'+m[0]+'" role="tab" aria-selected="'+(k===m[0])+'">'+m[1]+'</button>';}).join('')+'</div>';}
+function topPill(){var n=S.set&&S.set.name;return '<div class="pill"><button class="iconbtn" data-themetoggle aria-label="Changer le thème">&#9680;</button><b>Allemand 0 → B2</b><img src="logo.webp" alt=""></div><div class="greet">'+(n?'Bonjour, '+esc(n):'Bonjour')+'</div><p>Prêt pour la prochaine leçon ?</p>';}
+function favs(){return S.fav||(S.fav={});}
+var TY={faible:'faible',fort:'fort',mixte:'mixte',modal:'modal',auxiliaire:'auxiliaire'};
+function vForms(v){return esc(v.t+(v.s?' … '+v.s:'')+' · '+(v.a==='sein'?'ist ':'hat ')+v.p);}
+function vBadges(v){return '<span class="bdg '+v.k+'">'+TY[v.k]+'</span><span class="bdg '+v.a+'">'+v.a+'</span>'+(v.s?'<span class="bdg">séparable : '+esc(v.s)+'-</span>':'')+(v.r?'<span class="bdg">réfléchi</span>':'');}
+function vOK(v){
+  var f=VF.f;
+  if(f==='top'&&!v.top)return false;if(f==='fav'&&!favs()[v.i])return false;
+  if((f==='faible'||f==='fort'||f==='mixte')&&v.k!==f)return false;if(f==='modal'&&v.k!=='modal'&&v.k!=='auxiliaire')return false;
+  if(f==='sep'&&!v.s)return false;if(f==='refl'&&!v.r)return false;if(f==='sein'&&v.a!=='sein')return false;
+  if(VF.letter&&v.k0.charAt(0)!==VF.letter)return false;
+  if(VF.q){var q=fold(VF.q);if(v.k0.indexOf(q)<0&&v.ff.indexOf(q)<0)return false;}
+  return true;
+}
+function vOfDay(){var T=VB.filter(function(v){return v.top;}),d=Math.floor(Date.now()/864e5);return T[d%T.length];}
+function vVerbHome(){
+  var h=topPill()+'<div class="hero"><div class="kicker">Conjugaison · à tous les temps</div><h1>Verbes <span>allemands</span></h1></div>'+segHtml('v');
+  app.innerHTML=h+'<div class="spin">Chargement des verbes…</div>';
+  loadVerbs().then(function(){if(V.name!=='home'||S.mode!=='v')return;
+    var o=vOfDay(),nf=Object.keys(favs()).length;
+    var t='<div class="tiles"><button class="tile b" data-vguide><i>&#128214;</i><span class="t"><b>Technique de conjugaison</b><small>Présent, prétérit, participes, séparables…</small></span><span class="chev">&rsaquo;</span></button>'+
+    '<button class="tile g" data-vprac><i>&#127947;</i><span class="t"><b>S’entraîner</b><small>Quiz sur les formes des verbes</small></span><span class="chev">&rsaquo;</span></button>'+
+    '<button class="tile a" data-verb="'+esc(o.i)+'"><i>&#128161;</i><span class="t"><b>Verbe du jour : '+esc(o.i)+'</b><small>'+esc(o.f)+'</small></span><span class="chev">&rsaquo;</span></button></div>';
+    var F=[['all','Tous'],['top','À connaître'],['faible','Faibles'],['fort','Forts'],['mixte','Mixtes'],['modal','Modaux'],['sep','Séparables'],['refl','Réfléchis'],['sein','Avec sein'],['fav','★ Favoris']];
+    var ch='<div class="chips" id="vchips">'+F.map(function(x){return '<button class="chip" data-vf="'+x[0]+'" aria-pressed="'+(VF.f===x[0])+'">'+x[1]+(x[0]==='fav'?' ('+nf+')':'')+'</button>';}).join('')+'</div>';
+    var L={};VB.forEach(function(v){L[v.k0.charAt(0)]=1;});
+    var lt='<div class="chips lt" id="vlt"><button class="chip" data-vl="" aria-pressed="'+(VF.letter==='')+'">A–Z</button>'+Object.keys(L).sort().map(function(c){return '<button class="chip" data-vl="'+c+'" aria-pressed="'+(VF.letter===c)+'">'+c.toUpperCase()+'</button>';}).join('')+'</div>';
+    app.innerHTML=h+t+'<div class="sec">Tous les verbes ('+VB.length+')</div><div class="vsearch"><input type="search" id="vq" placeholder="Verbe allemand ou français…" value="'+esc(VF.q)+'" autocomplete="off" aria-label="Chercher un verbe"></div>'+ch+lt+'<div id="vl"></div>';
+    drawVList();
+  }).catch(function(){app.innerHTML=h+'<div class="empty">Impossible de charger les verbes. Vérifiez la connexion.</div>';});
+}
+function drawVList(){
+  var el=document.getElementById('vl');if(!el)return;
+  var L=VB.filter(vOK),sh=L.slice(0,VF.n),F=favs();
+  var h='<div class="note">'+L.length+' verbe'+(L.length>1?'s':'')+'</div><div class="list">'+sh.map(function(v){return '<button class="row vrow" data-verb="'+esc(v.i)+'"><span class="t"><b class="de">'+esc(v.i)+'</b><span class="fr" style="color:var(--frc)"> · '+esc(v.f)+'</span><span class="forms">'+vForms(v)+'</span></span>'+(F[v.i]?'<span class="vfav">★</span>':'')+'<span class="chev">&rsaquo;</span></button>';}).join('')+'</div>';
+  if(L.length>sh.length)h+='<div class="actions"><button class="btn wide" data-vmore>Afficher plus ('+(L.length-sh.length)+')</button></div>';
+  if(!L.length)h='<div class="empty">Aucun verbe ne correspond.'+(VF.f==='fav'?' Touchez ★ sur la fiche d’un verbe pour l’ajouter ici.':'')+'</div>';
+  el.innerHTML=h;
+}
+var TENSES=[['presens','Präsens','Présent'],['preterit','Präteritum','Prétérit'],['perfekt','Perfekt','Passé composé'],['plus','Plusquamperfekt','Plus-que-parfait'],['futur','Futur I','Futur'],['futur2','Futur II','Futur antérieur'],['k2','Konjunktiv II','Conditionnel'],['imp','Imperativ','Impératif']];
+var TNOTE={presens:'Radical + -e, -st, -t, -en, -t, -en. Les verbes forts changent parfois de voyelle à du et er/sie/es.',preterit:'Faibles : radical + -te. Forts : voyelle changée, sans terminaison à ich et er/sie/es. Utilisé surtout à l’écrit et pour sein, haben, modaux.',perfekt:'haben ou sein au présent + Partizip II en fin de phrase. Temps du passé de la conversation.',plus:'haben ou sein au prétérit + Partizip II. Une action antérieure à une autre au passé.',futur:'werden au présent + infinitif en fin de phrase. Le présent + un mot de temps suffit souvent.',futur2:'werden + Partizip II + haben/sein. Action terminée dans le futur, ou supposition sur le passé.',k2:'Souhait, politesse, irréel. La forme avec würde + infinitif est toujours possible et courante.',imp:'du : radical (e→i gardé : gib, lies, nimm). ihr : comme le présent. Sie : infinitif + Sie.'};
+var SP=['ich','du','er','wir','ihr','sie'],PR=['ich','du','er/sie/es','wir','ihr','sie/Sie'];
+function vVerb(){
+  loadVerbs().then(function(){
+    if(V.name!=='verb')return;
+    var i=VBI[V.id],v=VB[i];if(!v){return back();}
+    var d=DEC.describe(v.i);d.dat=v.dt;var c=DEC.conj(d),F=favs(),tk=V.vt||'presens';
+    var h='<div class="top"><button class="iconbtn" data-back aria-label="Retour">&larr;</button><h1>Verbes</h1><button class="iconbtn'+(F[v.i]?' on':'')+'" data-vfav="'+esc(v.i)+'" aria-label="Favori" aria-pressed="'+(!!F[v.i])+'">'+(F[v.i]?'★':'☆')+'</button></div>';
+    h+='<div class="vhero"><h1>'+esc(v.i)+' '+speakBtn(v.i.replace(/^sich /,''))+'</h1><div class="fr">'+esc(v.f)+'</div><div>'+vBadges(v)+'</div><div class="stam"><div><small>Infinitiv</small><b>'+esc(v.i)+'</b></div><div><small>Präteritum</small><b>'+esc(v.t)+'</b></div><div><small>Partizip II</small><b>'+(v.a==='sein'?'ist ':'hat ')+esc(v.p)+'</b></div></div></div>';
+    h+='<div class="chips" id="vtc">'+TENSES.map(function(t){return '<button class="chip" data-vt="'+t[0]+'" aria-pressed="'+(tk===t[0])+'">'+t[1]+'</button>';}).join('')+'</div>';
+    var T=TENSES.filter(function(t){return t[0]===tk;})[0];
+    h+='<div class="note"><b>'+T[2]+'</b> — '+TNOTE[tk]+'</div>';
+    if(tk==='imp'){h+=c.imp?'<div class="tbl ctab"><table><tbody>'+['du','ihr','Sie'].map(function(p,j){return '<tr><td>'+p+'</td><td data-speak="'+esc(c.imp[j])+'">'+esc(c.imp[j])+'!</td></tr>';}).join('')+'</tbody></table></div>':'<div class="empty">Les verbes modaux n’ont pas d’impératif.</div>';}
+    else if(tk==='k2'){h+='<div class="tbl ctab"><table><thead><tr><th>Pronom</th><th>'+(c.k2syn?'Forme simple':'—')+'</th><th>würde + inf.</th></tr></thead><tbody>'+PR.map(function(p,j){return '<tr><td>'+p+'</td><td data-speak="'+esc(SP[j]+' '+c.k2[j])+'">'+esc(c.k2[j])+'</td><td data-speak="'+esc(SP[j]+' '+c.wk[j])+'">'+esc(c.wk[j])+'</td></tr>';}).join('')+'</tbody></table></div>';}
+    else h+='<div class="tbl ctab"><table><tbody>'+PR.map(function(p,j){var f=c[tk][j];return '<tr><td>'+p+'</td><td data-speak="'+esc(SP[j]+' '+f)+'">'+esc(f)+'</td></tr>';}).join('')+'</tbody></table></div>';
+    h+='<div class="note">Touchez une forme pour l’écouter.</div>';
+    h+='<div class="sec">Participes</div><div class="tbl ctab"><table><tbody><tr><td>Partizip I</td><td data-speak="'+esc(c.part1)+'">'+esc(c.part1)+'</td></tr><tr><td>Partizip II</td><td data-speak="'+esc(v.p)+'">'+esc(v.p)+'</td></tr><tr><td>Auxiliaire</td><td>'+v.a+'</td></tr></tbody></table></div>';
+    if(d.sep)h+='<div class="kv"><b>Verbe séparable</b>Au présent et au prétérit, le préfixe <span class="de2">'+esc(d.sep)+'</span> va en fin de phrase : <span class="de2">'+esc(c.presens[0])+'</span>. Infinitif avec zu : <span class="de2">'+esc(d.sep+'zu'+d.inf.replace(/^sich /,'').slice(d.sep.length))+'</span>.</div>';
+    if(v.r)h+='<div class="kv"><b>Verbe réfléchi</b>Le pronom change avec la personne : '+(v.dt?'mir, dir, sich, uns, euch, sich (datif ici)':'mich, dich, sich, uns, euch, sich')+'.</div>';
+    if(v.e&&v.e.length){h+='<div class="sec">Exemples du cours</div>'+blocks(v.e.map(function(x){return{t:'ex',de:x[0],fr:x[1]};}));}
+    var pv=VB[i-1],nx=VB[i+1];
+    h+='<div class="pager">'+(pv?'<button class="btn" data-verb="'+esc(pv.i)+'" data-vrep="1"><small>&larr; Précédent</small>'+esc(pv.i)+'</button>':'')+(nx?'<button class="btn" data-verb="'+esc(nx.i)+'" data-vrep="1"><small>Suivant &rarr;</small>'+esc(nx.i)+'</button>':'')+'</div>';
+    app.innerHTML='<article class="lesson">'+h+'</article>';
+  });
+}
+var GUIDE=[
+{t:'kv',k:'Objectif',x:'comprendre comment se forment les verbes allemands, pour conjuguer un verbe que tu n’as jamais vu. Un verbe = un infinitif + 3 formes à retenir.'},
+{t:'h1',x:'1. Les 3 formes à connaître'},
+{t:'p',x:'Pour presque tout verbe, tu dois connaître l’⟦infinitif⟧, le ⟦Präteritum⟧ (3e personne) et le ⟦Partizip II⟧ avec son auxiliaire. Avec ces 3 formes, tu peux construire tous les temps.'},
+{t:'tbl',rows:[['Type','Infinitiv','Präteritum','Partizip II','Idée'],['Faible','machen','machte','hat gemacht','régulier : -te / ge-…-t'],['Fort','gehen','ging','ist gegangen','voyelle change : ge-…-en'],['Mixte','bringen','brachte','hat gebracht','voyelle change + -te / -t'],['Modal','können','konnte','hat gekonnt','présent particulier']]},
+{t:'h1',x:'2. Le présent (Präsens)'},
+{t:'p',x:'On enlève ⟦-en⟧ de l’infinitif pour obtenir le radical, puis on ajoute les terminaisons :'},
+{t:'tbl',rows:[['Pronom','Terminaison','machen','arbeiten'],['ich','-e','mache','arbeite'],['du','-st','machst','arbeitest'],['er/sie/es','-t','macht','arbeitet'],['wir','-en','machen','arbeiten'],['ihr','-t','macht','arbeitet'],['sie/Sie','-en','machen','arbeiten']]},
+{t:'li',x:'⟦Voyelle d’appui -e-⟧ : si le radical finit par -d, -t ou une consonne + m/n (arbeiten, finden, öffnen), on ajoute -e- à du, er, ihr.'},
+{t:'li',x:'⟦Radical en -s, -ß, -z, -x⟧ : à du, la terminaison est -t seulement (du heißt, du tanzt).'},
+{t:'li',x:'⟦Verbes en -eln / -ern⟧ : ich sammle, ich ändere ; wir sammeln.'},
+{t:'li',x:'⟦Changement de voyelle⟧ à du et er/sie/es seulement : e→i (geben : du gibst), e→ie (lesen : du liest), a→ä (fahren : du fährst). Jamais à ich, wir, ihr, sie.'},
+{t:'li',x:'⟦Modaux et wissen⟧ : ich et er/sie/es sont identiques, sans -t (ich kann, er kann ; ich weiß, er weiß).'},
+{t:'h1',x:'3. Le prétérit (Präteritum)'},
+{t:'tbl',rows:[['Personne','faible : machen','fort : gehen','mixte : kennen'],['ich','machte','ging','kannte'],['du','machtest','gingst','kanntest'],['er/sie/es','machte','ging','kannte'],['wir','machten','gingen','kannten'],['ihr','machtet','gingt','kanntet'],['sie/Sie','machten','gingen','kannten']]},
+{t:'li',x:'⟦Faibles⟧ : radical + -te (+ -e- d’appui : arbeitete).'},
+{t:'li',x:'⟦Forts⟧ : le radical change (gehen → ging) ; ich et er/sie/es n’ont aucune terminaison.'},
+{t:'li',x:'⟦À l’oral⟧ on utilise surtout le Perfekt ; le Präteritum domine à l’écrit et avec sein, haben et les modaux.'},
+{t:'h1',x:'4. Le participe II (Partizip II)'},
+{t:'tbl',rows:[['Cas','Règle','Exemple'],['Faible','ge- + radical + -t','gemacht, gearbeitet'],['Fort','ge- + radical modifié + -en','gegangen, gesungen'],['Préfixe inséparable','pas de ge-','besucht, verstanden, bekommen'],['Verbe en -ieren','pas de ge-','studiert, telefoniert'],['Préfixe séparable','préfixe + ge- + …','angerufen, aufgemacht']]},
+{t:'p',x:'Préfixes inséparables : ⟦be-, ge-, er-, ent-, emp-, ver-, zer-, miss-⟧ (et über-, unter-, wieder- le plus souvent).'},
+{t:'h1',x:'5. Le Perfekt : haben ou sein ?'},
+{t:'p',x:'Perfekt = ⟦haben / sein⟧ au présent + ⟦Partizip II⟧ à la fin de la phrase.'},
+{t:'ex',de:'Ich habe gestern einen Film gesehen.',fr:'J’ai vu un film hier.'},
+{t:'ex',de:'Wir sind nach Berlin gefahren.',fr:'Nous sommes allés à Berlin (en véhicule).'},
+{t:'li',x:'⟦sein⟧ : déplacement (gehen, fahren, kommen, fliegen), changement d’état (aufwachen, einschlafen, werden, sterben) et sein, bleiben, passieren.'},
+{t:'li',x:'⟦haben⟧ : tous les autres, surtout les verbes avec un complément à l’accusatif et les verbes réfléchis.'},
+{t:'h1',x:'6. Plus-que-parfait et futur'},
+{t:'tbl',rows:[['Temps','Formation','Exemple'],['Plusquamperfekt','hatte / war + Partizip II','Ich hatte gegessen.'],['Futur I','werden + infinitif','Ich werde kommen.'],['Futur II','werden + Partizip II + haben/sein','Er wird gegangen sein.']]},
+{t:'h1',x:'7. Verbes séparables et inséparables'},
+{t:'tbl',rows:[['','Séparable','Inséparable'],['Exemple','anrufen','verstehen'],['Présent','Ich rufe dich an.','Ich verstehe dich.'],['Partizip II','angerufen','verstanden'],['Avec zu','anzurufen','zu verstehen'],['Accent','sur le préfixe','sur le radical']]},
+{t:'p',x:'Préfixes séparables fréquents : ⟦ab-, an-, auf-, aus-, bei-, ein-, mit-, nach-, vor-, zu-, zurück-, zusammen-⟧. Dans une subordonnée, le verbe reste d’un bloc à la fin : …, weil ich dich anrufe.'},
+{t:'h1',x:'8. Verbes réfléchis'},
+{t:'tbl',rows:[['Pronom','Accusatif','Datif'],['ich','mich','mir'],['du','dich','dir'],['er/sie/es','sich','sich'],['wir','uns','uns'],['ihr','euch','euch'],['sie/Sie','sich','sich']]},
+{t:'ex',de:'Ich freue mich auf die Ferien.',fr:'Je me réjouis des vacances.'},
+{t:'ex',de:'Ich putze mir die Zähne.',fr:'Je me lave les dents. (datif : complément d’objet présent)'},
+{t:'h1',x:'9. Impératif et Konjunktiv II'},
+{t:'li',x:'⟦Impératif⟧ : du → radical (Mach!), avec e→i conservé (Gib! Lies! Nimm!), mais fahren → Fahr!. ihr → Macht! Sie → Machen Sie!'},
+{t:'li',x:'⟦Konjunktiv II⟧ : würde + infinitif (ich würde gehen). Formes courtes à connaître : wäre, hätte, könnte, müsste, dürfte, wüsste, käme, ginge, gäbe.'},
+{t:'h1',x:'10. Astuces de mémorisation'},
+{t:'p',x:'Les verbes forts suivent des séries de voyelles : apprends-les par familles.'},
+{t:'tbl',rows:[['Série','Infinitiv','Präteritum','Partizip II'],['i – a – u','singen','sang','gesungen'],['i – a – u','trinken','trank','getrunken'],['ei – ie – ie','schreiben','schrieb','geschrieben'],['ei – i – i','greifen','griff','gegriffen'],['e – a – o','helfen','half','geholfen'],['ie – o – o','fliegen','flog','geflogen'],['a – u – a','fahren','fuhr','gefahren']]},
+{t:'li',x:'Apprends toujours les 3 formes ensemble et à voix haute : touche une forme dans la fiche d’un verbe pour l’écouter.'},
+{t:'li',x:'Commence par le filtre « À connaître », puis ajoute 5 verbes par jour dans tes favoris ★.'},
+{t:'li',x:'Teste-toi ensuite avec « S’entraîner » : Partizip II, Präteritum et choix de l’auxiliaire.'}
+];
+var GX={
+six:[{t:'p',x:'Un verbe allemand se conjugue à ⟦six temps⟧ de l’indicatif. Voici machen à la 1re personne :'},{t:'tbl',rows:[['Temps','Formation','ich …'],['Präsens','radical + terminaison','ich mache'],['Präteritum','radical + -te (faible)','ich machte'],['Perfekt','haben/sein + Partizip II','ich habe gemacht'],['Plusquamperfekt','hatte/war + Partizip II','ich hatte gemacht'],['Futur I','werden + infinitif','ich werde machen'],['Futur II','werden + Partizip II + haben/sein','ich werde gemacht haben']]}],
+mod:[{t:'p',x:'Les six modaux : ⟦können⟧ (pouvoir), ⟦müssen⟧ (devoir, obligation), ⟦dürfen⟧ (avoir le droit), ⟦sollen⟧ (devoir, ordre d’un tiers), ⟦wollen⟧ (vouloir), ⟦mögen⟧ (aimer). Avec möchten (je voudrais).'},{t:'tbl',rows:[['','können','müssen','dürfen','sollen','wollen','mögen'],['ich','kann','muss','darf','soll','will','mag'],['du','kannst','musst','darfst','sollst','willst','magst'],['er/sie/es','kann','muss','darf','soll','will','mag'],['wir','können','müssen','dürfen','sollen','wollen','mögen'],['ihr','könnt','müsst','dürft','sollt','wollt','mögt'],['sie/Sie','können','müssen','dürfen','sollen','wollen','mögen'],['Präteritum (ich)','konnte','musste','durfte','sollte','wollte','mochte']]},{t:'li',x:'⟦Construction⟧ : modal conjugué en 2e position + infinitif sans zu à la fin.'},{t:'li',x:'⟦ich = er/sie/es⟧ : aucune terminaison à ces deux personnes.'},{t:'li',x:'⟦Perfekt⟧ : avec un infinitif, on double l’infinitif : Ich habe gehen müssen. Le prétérit est préféré : Ich musste gehen.'},{t:'ex',de:'Ich muss heute früh aufstehen.',fr:'Je dois me lever tôt aujourd’hui.'},{t:'ex',de:'Du darfst hier nicht parken.',fr:'Tu n’as pas le droit de te garer ici.'}],
+shw:[{t:'p',x:'Ces trois verbes sont irréguliers et servent d’⟦auxiliaires⟧ : à connaître par cœur.'},{t:'tbl',rows:[['','sein','haben','werden'],['ich','bin','habe','werde'],['du','bist','hast','wirst'],['er/sie/es','ist','hat','wird'],['wir','sind','haben','werden'],['ihr','seid','habt','werdet'],['sie/Sie','sind','haben','werden'],['Präteritum (ich)','war','hatte','wurde'],['Partizip II','gewesen','gehabt','geworden / worden']]},{t:'li',x:'⟦sein⟧ : être. Auxiliaire du Perfekt de sein, bleiben, des verbes de mouvement.'},{t:'li',x:'⟦haben⟧ : avoir. Auxiliaire du Perfekt de la plupart des verbes.'},{t:'li',x:'⟦werden⟧ : devenir ; auxiliaire du futur (ich werde gehen) et du passif (Das Haus wird gebaut). Son participe est geworden, mais worden au passif.'},{t:'ex',de:'Sie wird Ärztin.',fr:'Elle devient médecin.'},{t:'ex',de:'Wir werden morgen kommen.',fr:'Nous viendrons demain.'}]};
+function guideSecs(){
+  var g={},cur=0;GUIDE.forEach(function(b){if(b.t==='h1'){cur=parseInt(b.x,10);g[cur]=[];}else if(cur)g[cur].push(b);});
+  return [['Les six temps',GX.six.concat(g[1],g[6])],['Les terminaisons',g[2]],['Le prétérit',g[3]],['Le participe II',g[4]],['Haben ou sein ?',g[5]],['Les verbes séparables',g[7]],['Les verbes modaux',GX.mod],['Les verbes pronominaux',g[8]],['Sein, haben, werden',GX.shw],['Impératif, Konjunktiv II et astuces',g[9].concat(g[10])]];
+}
+function vVGuide(){
+  var S10=guideSecs(),intro=GUIDE[0];
+  var h='<div class="top"><button class="iconbtn" data-back aria-label="Retour">&larr;</button><h1>Technique de conjugaison</h1></div><article class="lesson"><div class="legend"><span class="de">Allemand</span><span class="frc">Français</span></div>'+blocks([intro])+'<div class="actions"><button class="btn" data-gall="1">Tout déplier</button><button class="btn" data-gall="0">Tout replier</button></div>';
+  S10.forEach(function(x,i){h+='<details class="gsec"'+(i===0?' open':'')+'><summary><span class="gn">'+(i+1)+'</span>'+esc(x[0])+'</summary><div class="gbody">'+blocks(x[1])+'</div></details>';});
+  app.innerHTML=h+'<div class="actions"><button class="btn pri wide" data-vprac>S’entraîner maintenant</button></div></article>';
+}
+function vVPrac(){
+  loadVerbs().then(function(){
+    if(V.name!=='vprac')return;
+    var head='<div class="top"><button class="iconbtn" data-back aria-label="Retour">&larr;</button><h1>Entraînement verbes</h1></div>';
+    if(!VP.qs){app.innerHTML=head+'<div class="score"><b>10</b>questions sur les formes des verbes</div><div class="actions"><button class="btn pri wide" data-vstart>Commencer</button></div><p class="note">Partizip II, Präteritum et auxiliaire (haben ou sein) des verbes à connaître.</p>';return;}
+    if(VP.i>=VP.qs.length){var p=Math.round(VP.score/VP.qs.length*100);touchDay();app.innerHTML=head+'<div class="score"><b>'+VP.score+' / '+VP.qs.length+'</b>'+(p>=80?'Très bien !':p>=50?'Bien, continuez.':'À retravailler : relisez la fiche des verbes.')+'</div><div class="actions"><button class="btn pri wide" data-vstart>Rejouer</button></div>';return;}
+    var q=VP.qs[VP.i];
+    var h=head+'<div class="prog"><span>Question '+(VP.i+1)+' / '+VP.qs.length+'</span><span>Score '+VP.score+'</span></div><div class="q"><div class="qt">'+q.t+'</div><div class="qq de">'+esc(q.q)+'</div><div class="hint frc">'+esc(q.f)+'</div><div class="opts">';
+    q.o.forEach(function(o,i){var cl='opt de';if(VP.ans>=0){if(i===q.a)cl+=' ok';else if(i===VP.ans)cl+=' ko';}h+='<button class="'+cl+'" data-vopt="'+i+'"'+(VP.ans>=0?' disabled':'')+'>'+esc(o)+'</button>';});
+    h+='</div>';if(VP.ans>=0)h+='<button class="btn pri" style="width:100%" data-vnext>'+(VP.i+1<VP.qs.length?'Suivante':'Voir le résultat')+'</button>';
+    app.innerHTML=h+'</div>';
+  });
+}
+function vMakeQs(){
+  var P=VB.filter(function(v){return v.top&&!v.s&&!v.r;});if(P.length<20)P=VB;
+  return shuffle(P).slice(0,10).map(function(v){
+    var ty=Math.floor(Math.random()*3),q,o,a,pick=function(fn,ok){var s={};s[ok]=1;var r=[ok];shuffle(VB).forEach(function(x){var y=fn(x);if(r.length<4&&y&&!s[y]&&!x.s&&!x.r){s[y]=1;r.push(y);}});return r;};
+    if(ty===0){o=shuffle(pick(function(x){return x.p;},v.p));q={t:'Quel est le Partizip II ?',q:v.i,f:v.f,o:o,a:o.indexOf(v.p)};}
+    else if(ty===1){o=shuffle(pick(function(x){return x.t;},v.t));q={t:'Quel est le Präteritum (er/sie/es) ?',q:v.i,f:v.f,o:o,a:o.indexOf(v.t)};}
+    else{o=['haben','sein'];q={t:'Quel auxiliaire au Perfekt ?',q:v.i,f:v.f,o:o,a:o.indexOf(v.a)};}
+    return q;});
+}
+/* événements de la rubrique */
+document.addEventListener('click',function(e){
+  var t=e.target.closest('[data-themetoggle],[data-verb],[data-vf],[data-vl],[data-vmore],[data-vguide],[data-vprac],[data-vfav],[data-vt],[data-vstart],[data-vopt],[data-vnext],[data-gall]');
+  if(!t)return;var d=t.dataset;
+  if('themetoggle' in d){var dark=document.documentElement.getAttribute('data-theme')!=='light'&&!(G('theme')==='auto'&&window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches);S.set.theme=dark?'light':'dark';save();applySettings();return;}
+  if(d.verb){if(d.vrep){nav.pop();return go({name:'verb',id:d.verb,vt:V.vt},true);}return go({name:'verb',id:d.verb});}
+  if(d.vf){VF.f=d.vf;VF.n=80;[].forEach.call(document.querySelectorAll('#vchips .chip'),function(b){b.setAttribute('aria-pressed',b.dataset.vf===VF.f);});return drawVList();}
+  if(d.vl!==undefined){VF.letter=d.vl;VF.n=80;[].forEach.call(document.querySelectorAll('#vlt .chip'),function(b){b.setAttribute('aria-pressed',b.dataset.vl===VF.letter);});return drawVList();}
+  if('vmore' in d){VF.n+=120;return drawVList();}
+  if('vguide' in d)return go({name:'vguide'});
+  if('vprac' in d){VP={};return go({name:'vprac'});}
+  if(d.vfav){var F=favs();if(F[d.vfav])delete F[d.vfav];else{F[d.vfav]=1;toast('Ajouté aux favoris');}save();return vVerb();}
+  if(d.vt){V.vt=d.vt;return vVerb();}
+  if(d.gall!==undefined){[].forEach.call(document.querySelectorAll('details.gsec'),function(x){x.open=d.gall==='1';});return;}
+  if('vstart' in d){VP={qs:vMakeQs(),i:0,score:0,ans:-1};return vVPrac();}
+  if(d.vopt!==undefined&&VP.ans<0){VP.ans=+d.vopt;if(VP.ans===VP.qs[VP.i].a)VP.score++;return vVPrac();}
+  if('vnext' in d){VP.i++;VP.ans=-1;return vVPrac();}
+});
+document.addEventListener('input',function(e){
+  if(e.target.id==='vq'){VF.q=e.target.value;VF.n=80;drawVList();}
+  if(e.target.id==='nm'){S.set.name=e.target.value.trim();save();}
+});
+
+/* ---------- boot ---------- */
+applySettings();
+app.innerHTML='<div class="spin">Chargement du cours…</div>';
+loadMeta().then(function(){render();}).catch(function(){app.innerHTML='<div class="empty">Impossible de charger le cours. Vérifiez la connexion puis rouvrez la page.</div>';});
+})();
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(function(){});
+</script>

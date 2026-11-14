@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "app.netlify.moonlit_hamster_c85ae3.twa",
+        "sha256_cert_fingerprints": ["D7:AD:77:92:CE:D0:05:1C:07:91:76:23:31:E2:05:6F:A8:CE:93:F1:60:13:60:C3:AC:92:67:AB:9E:47:11:68"]
+      }
+    }]
