@@ -1,0 +1,12 @@
+{
+  "appId": "com.marc.allemandb2",
+  "appName": "Allemand 0-B2",
+  "webDir": "www",
+  "backgroundColor": "#0a1222",
+  "plugins": {
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_notify",
+      "iconColor": "#4A90E2"
+    }
+  }
+}
