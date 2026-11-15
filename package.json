@@ -1,0 +1,14 @@
+{
+  "name": "allemand-b2",
+  "version": "3.1.0",
+  "private": true,
+  "description": "Allemand 0 → B2 : cours, dictionnaire, verbes",
+  "dependencies": {
+    "@capacitor/android": "^6.2.0",
+    "@capacitor/core": "^6.2.0",
+    "@capacitor/local-notifications": "^6.1.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.2.0"
+  }
+}
