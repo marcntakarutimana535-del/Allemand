@@ -61,3 +61,10 @@ Le workflow ajoute les autorisations Android nécessaires (notifications, micro)
 - Numérotation visible de chaque grand point : Cours 1–249, Dictionnaire 1–86, Technique 1–75 (+ annexes 76–80), Verbes 1–1255.
 - Corrections de conjugaison (auxiliaires, formes fortes, traductions, verbes pronominaux) et de deux phrases du guide.
 - Nouvelles annexes : verbes forts/mixtes, verbes + préposition + cas, verbes à datif, sein/haben.
+
+## Version 3.4.0
+- Objectif quotidien (10 / 20 / 40 réponses, réglable) avec barre de progression sur l'accueil et l'onglet Réviser.
+- « Mes erreurs de quiz » : les questions ratées sont conservées (jusqu'à 300) et disparaissent quand on les réussit ; incluses dans la sauvegarde.
+
+## Version 3.5.0
+- Simulateur d'examen A1 → B2 (Réviser → Simulateur) : Lesen, Hören (synthèse vocale, 2 écoutes), Sprachbausteine, Schreiben (points attendus + texte modèle), Sprechen (auto-évaluation) ; chronomètre, note sur 100, seuil 60, historique des résultats. Contenu dans `www/data/sim.json`.

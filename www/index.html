@@ -42,7 +42,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .row .t small{color:var(--muted);font-size:.82rem}
 .row.done .n{background:var(--good);color:#fff}
 .row .n .ok{position:absolute;right:-4px;top:-5px;background:var(--good);color:#fff;border-radius:50%;width:15px;height:15px;font-size:.6rem;display:grid;place-items:center}
-.lnum{color:var(--accent,#c0392b)}
+.goalc .bar{margin:8px 0 4px}.lnum{color:var(--accent,#c0392b)}
 .bar{height:5px;background:var(--surface2);border-radius:3px;margin-top:6px;overflow:hidden}
 .bar i{display:block;height:100%;background:var(--accent);border-radius:3px}
 .chev{color:var(--muted);flex:none}
@@ -290,10 +290,10 @@ input[type=time]{width:auto}
 'use strict';
 /* ---------- storage ---------- */
 var KEY='de0b2:v1';
-var S={done:{},cards:{},quiz:{},last:null,days:{},dir:'de',mode:'c',set:{},vfav:{},vseen:{},vrecent:[],vview:'t',hist:[],hard:{},plan:null,vtr:{},exams:[],level:null,pstat:{}};
-var DEF={theme:'dark',fs:100,lh:1.5,rate:.9,hide:false,newc:20,qn:10,genre:true,resume:true,remind:false,rtime:'19:00'};
+var S={done:{},cards:{},quiz:{},last:null,days:{},dir:'de',mode:'c',set:{},vfav:{},vseen:{},vrecent:[],vview:'t',hist:[],hard:{},act:{},err:{},sim:[],plan:null,vtr:{},exams:[],level:null,pstat:{}};
+var DEF={theme:'dark',fs:100,lh:1.5,rate:.9,hide:false,newc:20,qn:10,genre:true,resume:true,remind:false,rtime:'19:00',goal:20};
 try{var raw=localStorage.getItem(KEY); if(raw){var o=JSON.parse(raw); for(var k in o) S[k]=o[k];}}catch(e){}
-var BKEYS=['done','cards','quiz','days','last','set','vfav','vseen','vrecent','vview','hist','hard','plan','vtr','exams','level','pstat'];
+var BKEYS=['done','cards','quiz','days','last','set','vfav','vseen','vrecent','vview','hist','hard','plan','vtr','exams','level','pstat','act','err','sim'];
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
 function G(k){var v=S.set&&S.set[k];return v===undefined?DEF[k]:v;}
 function applySettings(){
@@ -432,6 +432,11 @@ var DEH={'allemand':1,'deutsch':1,'exemple allemand':1,'expression':1,'verbe':1,
 function lnum(k,id){if(k==='t')return parseInt(String(id).slice(1),10);return ORD[k].indexOf(id)+1;}
 function lnumTxt(k,id){var n=lnum(k,id);return n>0?String(n):'·';}
 var NVERBS=1255;
+function act(n){S.act=S.act||{};var t=today();S.act[t]=(S.act[t]||0)+(n||1);var ks=Object.keys(S.act);if(ks.length>400){ks.sort();ks.slice(0,ks.length-400).forEach(function(k){delete S.act[k];});}}
+function goalBar(){var g=+G('goal');if(!g)return '';var n=(S.act&&S.act[today()])||0,p=Math.min(100,Math.round(n/g*100));
+  return '<div class="setc goalc"><b>Objectif du jour : '+n+' / '+g+' réponses'+(n>=g?' ✓':'')+'</b><div class="bar"><i style="width:'+p+'%"></i></div><small>'+(n>=g?'Objectif atteint, bravo !':'Cartes, quiz et verbes comptent. Encore '+(g-n)+' pour y arriver.')+'</small></div>';}
+function errKey(q){return ckey(q.t+'|'+q.q);}
+function errCount(){return Object.keys(S.err||{}).length;}
 function rich(t){return esc(t).replace(/\u27e6/g,'<span class="de2">').replace(/\u27e7/g,'</span>');}
 function plain(t){return String(t).replace(/[\u27e6\u27e7]/g,'');}
 function speakBtn(t){return '<button class="spk" data-speak="'+esc(t)+'" aria-label="Écouter">&#128266;</button>';}
@@ -441,7 +446,7 @@ var app=document.getElementById('app');
 function render(){
   if(typeof clearFind==='function'&&V.name!=='lesson'){var fb=document.getElementById('fbar');if(fb)fb.remove();}
   renderTabs();
-  var f={home:vHome,cat:vCat,lesson:vLesson,cards:vCards,quiz:vQuiz,search:vSearch,prog:vProg,set:vSet,vguide:vGuide,vgroup:vGroup,verb:vVerb,plan:vPlan,train:vTrain,hist:vHist,vtrain:vVtrain,dictee:vDictee,pron:vPron,level:vLevel,exam:vExam,hard:vHard}[V.name]||vHome;
+  var f={home:vHome,cat:vCat,lesson:vLesson,cards:vCards,quiz:vQuiz,search:vSearch,prog:vProg,set:vSet,vguide:vGuide,vgroup:vGroup,verb:vVerb,plan:vPlan,train:vTrain,hist:vHist,vtrain:vVtrain,dictee:vDictee,pron:vPron,level:vLevel,exam:vExam,sim:vSim,hard:vHard}[V.name]||vHome;
   f();
   if(PENDY){var y=PENDY;PENDY=0;stickScroll(y);}
 }
@@ -512,7 +517,7 @@ function scopeSel(cur,which){
   var o='<option value="all"'+(cur==='all'?' selected':'')+'>Tout (cours + dictionnaire)</option><option value="kc"'+(cur==='kc'?' selected':'')+'>Tout le cours</option><option value="kd"'+(cur==='kd'?' selected':'')+'>Tout le dictionnaire</option><option value="kt"'+(cur==='kt'?' selected':'')+'>Toute la technique de conjugaison</option>';
   ['c','d','t'].forEach(function(k){o+='<optgroup label="'+(k==='c'?'Cours':k==='d'?'Dictionnaire':'Technique de conjugaison')+'">';modeCats(k).forEach(function(c){o+='<option value="c'+c.id+'"'+(cur==='c'+c.id?' selected':'')+'>'+(k==='c'?c.id+'. ':'')+esc(c.name)+'</option>';});o+='</optgroup>';});
   var nh=Object.keys(S.hard).length;
-  o+='<optgroup label="Mes listes"><option value="hard"'+(cur==='hard'?' selected':'')+'>Mes mots difficiles ('+nh+')</option></optgroup>';
+  o+='<optgroup label="Mes listes"><option value="err"'+(cur==='err'?' selected':'')+'>Mes erreurs de quiz ('+errCount()+')</option><option value="hard"'+(cur==='hard'?' selected':'')+'>Mes mots difficiles ('+nh+')</option></optgroup>';
   o+='<optgroup label="Verbes"><option value="kv"'+(cur==='kv'?' selected':'')+'>Tous les verbes</option>'+VGROUPS.map(function(g){return '<option value="vg-'+g[0]+'"'+(cur==='vg-'+g[0]?' selected':'')+'>'+esc(g[1])+'</option>';}).join('')+'</optgroup>';
   if(cur&&cur.indexOf('vv-')===0&&VERBS&&VERBS[+cur.slice(3)])o='<option value="'+cur+'" selected>Verbe : '+esc(VERBS[+cur.slice(3)].i)+'</option>'+o;
   if(cur&&LESMETA[cur]){var m=LESMETA[cur];o='<option value="'+cur+'" selected>Leçon : '+esc(m.title)+'</option>'+o;}
@@ -521,6 +526,7 @@ function scopeSel(cur,which){
   return '<div class="scope"><select id="scopesel" data-scope="'+which+'" aria-label="Choisir le contenu">'+o+'</select></div>';
 }
 function poolFor(scope){
+  if(scope==='err')return Promise.resolve([{q:Object.keys(S.err||{}).map(function(k){return S.err[k];})}]);
   if(scope==='hard')return hardPool();
   if(scope.indexOf('wk-')===0)return weekPool(+scope.slice(3));
   if(scope==='daily')scope='all';
@@ -594,7 +600,7 @@ function grade(g){
   var r=srs(S.cards[k],g);S.cards[k]=r;
   if(g>=2)FC.known++;
   if(g===0)FC.queue.push(c);
-  touchDay();FC.i++;FC.flip=false;save();drawCards(false);persist();
+  act();touchDay();FC.i++;FC.flip=false;save();drawCards(false);persist();
 }
 
 /* ---------- quiz ---------- */
@@ -796,6 +802,7 @@ function vSet(){
   h+='<div class="setc"><b>Cartes par série</b>'+seg('newc',[[10,'10'],[20,'20'],[40,'40']])+'</div>';
   h+='<div class="setc"><b>Questions par quiz</b>'+seg('qn',[[5,'5'],[10,'10'],[20,'20']])+'</div>';
   h+='<div class="setc"><b>Sens des cartes</b>'+seg('dirx',[['de','Allemand → Français'],['fr','Français → Allemand']])+'</div>';
+  h+='<div class="setc"><b>Objectif quotidien</b>'+seg('goal',[[0,'Aucun'],[10,'10'],[20,'20'],[40,'40']])+'<small>Nombre de réponses par jour (cartes, quiz, verbes).</small></div>';
   h+=setExtra();
   h+='<div class="sec">Audio</div><div class="setc"><b>Vitesse de lecture</b>'+seg('rate',[[0.6,'Lente'],[0.9,'Normale'],[1.1,'Rapide']])+'<div class="actions"><button class="btn" data-speak="Guten Tag! Wie geht es Ihnen?">&#128266; Tester la voix</button></div></div>';
   h+='<div class="sec">Sauvegarde</div><div class="setc"><b>Copier / restaurer ma progression</b><small>Utile pour changer de téléphone : copiez le texte, puis collez-le sur l’autre appareil.</small><div class="actions"><button class="btn" data-backup="copy">Copier ma sauvegarde</button></div><textarea id="bk" rows="3" placeholder="Collez ici une sauvegarde pour la restaurer" aria-label="Sauvegarde"></textarea><div class="actions"><button class="btn" data-backup="restore">Restaurer</button></div></div>';
@@ -832,10 +839,15 @@ document.addEventListener('click',function(e){
   if(d.cardsgo){if(d.cardsgo==='force'){var all=shuffle(FC.all).slice(0,G('newc'));FC.queue=all;FC.i=0;FC.flip=false;FC.total=all.length;FC.known=0;FC.started=true;return drawCards(false);}FC.started=false;return vCards();}
   if(d.qstart)return qStart();
   if('qquit' in d){Q.running=false;if(hi>0&&/^(lesson|verb|vgroup|plan|train)$/.test(HS[hi-1].v.name))return back();return vQuiz();}
-  if(d.opt!==undefined&&Q.answered<0){Q.answered=+d.opt;if(Q.opts[Q.answered].c)Q.score++;return drawQuiz();}
+  if(d.opt!==undefined&&Q.answered<0){Q.answered=+d.opt;var qq=Q.qs[Q.i],okq=!!Q.opts[Q.answered].c;if(okq)Q.score++;
+    S.err=S.err||{};var ek=errKey(qq);
+    if(okq){if(S.err[ek])delete S.err[ek];}
+    else{var ks=Object.keys(S.err);if(ks.length>=300)delete S.err[ks[0]];S.err[ek]=qq;}
+    act();touchDay();save();return drawQuiz();}
   if(d.qnext){Q.i++;Q.answered=-1;Q.opts=null;return drawQuiz();}
-  if(d.reset){S.done={};S.cards={};S.quiz={};S.days={};S.last=null;S.vfav={};S.vseen={};S.vrecent=[];S.hist=[];S.hard={};S.plan=null;S.vtr={};S.exams=[];S.level=null;S.pstat={};try{localStorage.removeItem(RKEY);}catch(er){}save();toast('Progression effacée');return render();}
+  if(d.reset){S.done={};S.cards={};S.quiz={};S.days={};S.last=null;S.vfav={};S.vseen={};S.vrecent=[];S.hist=[];S.hard={};S.act={};S.err={};S.sim=[];S.plan=null;S.vtr={};S.exams=[];S.level=null;S.pstat={};try{localStorage.removeItem(RKEY);}catch(er){}save();toast('Progression effacée');return render();}
 });
+document.addEventListener('click',function(e){if(e.target.closest('[data-errgo]')){Q.scope='err';Q.running=false;go({name:'quiz'});}});
 document.addEventListener('change',function(e){
   var s=e.target.closest('#scopesel');if(!s)return;
   if(s.dataset.scope==='cards'){FC.scope=s.value;FC.started=false;vCards();}
@@ -871,6 +883,7 @@ function vHome(){
   var resume=(lastL&&lastL.k===k),showL=resume?lastL:LESMETA[ids[0]];
   h+='<button class="cont" data-lesson="'+showL.id+'"><div><small>'+(resume?(S.done[showL.id]?'Dernière leçon':'Reprendre'):'Commencer')+'</small><b>'+esc(showL.title)+'</b></div><span class="arrow">&rarr;</span></button>';
   h+='<div class="stats"><div class="stat"><b>'+td+'<small style="font-size:.9rem;color:var(--muted)"> / '+ids.length+'</small></b><span>'+(k==='c'?'leçons terminées':'chapitres lus')+'</span></div><div class="stat"><b>'+streak()+'</b><span>jours de suite</span></div><div class="stat"><b>'+learned()+'</b><span>cartes apprises</span></div></div>';
+  h+=goalBar();
   if(k==='d')h+='<button class="row" data-tab="search" style="margin-bottom:6px"><span class="ic b"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></span><span class="t"><b>Chercher un mot</b><small>Allemand ou français, dans tout le dictionnaire</small></span><span class="chev">&rsaquo;</span></button>';
   h+='<div class="sec">Catégories</div><div class="list">';
   modeCats(k).forEach(function(c,ci){var d=doneCount(c),n=c.lessons.length;
@@ -1737,7 +1750,7 @@ function scopeName(sc){
   if(!sc)return 'Tout';
   if(LESMETA[sc])return LESMETA[sc].title;
   if(sc==='all')return 'Cours + dictionnaire';if(sc==='kc')return 'Tout le cours';if(sc==='kd')return 'Tout le dictionnaire';if(sc==='kv')return 'Tous les verbes';
-  if(sc==='hard')return 'Mes mots difficiles';if(sc==='daily')return 'Cartes du jour';
+  if(sc==='hard')return 'Mes mots difficiles';if(sc==='err')return 'Mes erreurs de quiz';if(sc==='daily')return 'Cartes du jour';
   if(sc.indexOf('wk-')===0)return 'Semaine '+sc.slice(3)+' du plan';
   if(sc.indexOf('vg-')===0&&VGN[sc.slice(3)])return VGN[sc.slice(3)][1];
   if(sc.indexOf('vv-')===0)return 'Un verbe';
@@ -1894,15 +1907,17 @@ function trow(ic,title,sub,go){return '<button class="row" data-go="'+go+'"><spa
 function vTrain(){
   var due=dueCount(),nh=Object.keys(S.hard).length;
   var h='<div class="top"><h1>Réviser et s’entraîner</h1></div>';
+  h+=goalBar();
   h+='<div class="stats"><div class="stat"><b>'+due+'</b><span>cartes à revoir</span></div><div class="stat"><b>'+learned()+'</b><span>cartes apprises</span></div><div class="stat"><b>'+streak()+'</b><span>jours de suite</span></div></div>';
   h+='<div class="list">'+trow('🗂','Cartes de vocabulaire','Révision espacée : Encore · Difficile · Bien · Facile','cards')
     +trow('❓','Quiz','Questions à choix multiples sur le cours, le dictionnaire, les verbes','quiz')
     +trow('✍️','Entraînement des verbes','Tapez la bonne forme : 6 temps, 6 personnes','vtrain')
     +trow('🎧','Dictée','Écoutez une phrase, écrivez-la : correction mot à mot','dictee')
     +trow('🎤','Prononciation','Écoutez, répétez, enregistrez-vous et comparez','pron')
+    +'<button class="row" data-errgo="1"><span class="n">🧩</span><span class="t"><b>Mes erreurs de quiz</b><small>'+errCount()+' question'+(errCount()>1?'s':'')+' ratée'+(errCount()>1?'s':'')+' à revoir · disparaît quand vous réussissez</small></span><span class="chev">&rsaquo;</span></button>'
     +trow('★','Mes mots difficiles',nh+' mot'+(nh>1?'s':'')+' à retravailler','hard')+'</div>';
   h+='<div class="sec">Évaluations</div><div class="list">'+trow('🧭','Test de niveau','32 questions, de A1 à B2'+(S.level?' · dernier résultat : '+esc(S.level.est):''),'level')
-    +trow('🎓','Examens blancs B1 et B2','Vocabulaire, grammaire, conjugaison · avec chronomètre','exam')+'</div>';
+    +trow('🎓','Examens blancs B1 et B2','Vocabulaire, grammaire, conjugaison · avec chronomètre','exam')+trow('🏛️','Simulateur d’examen A1 → B2','Lesen, Hören, Sprachbausteine, Schreiben, Sprechen · note sur 100','sim')+'</div>';
   app.innerHTML=h;
 }
 
@@ -1986,7 +2001,7 @@ function vtCheck(){
   VT.val=val;VT.ok=r;VT.checked=true;if(r)VT.score++;
   VT.res.push({q:q,val:val,ok:r,cor:PSAY[q.pi]+' '+cor});
   var t=S.vtr[v.i]||(S.vtr[v.i]={ok:0,ko:0});if(r)t.ok++;else t.ko++;
-  touchDay();save();vtDraw();
+  act();touchDay();save();vtDraw();
 }
 function vtResult(top){
   var n=VT.qs.length,bad=VT.res.filter(function(r){return !r.ok;});
@@ -2235,6 +2250,135 @@ function vExam(){
   if(ex.length){h+='<div class="sec">Mes résultats</div><div class="list">'+ex.slice(0,8).map(function(e){var p=Math.round(e.ok/e.n*100);return '<div class="row"><span class="n">'+e.lv+'</span><span class="t"><b>'+e.ok+' / '+e.n+' · '+p+' %</b><small>'+esc(e.d)+' · '+Math.round(e.t/60)+' min</small></span><span class="tg '+(p>=60?'okt':'lat')+'">'+(p>=60?'réussi':'à refaire')+'</span></div>';}).join('')+'</div>';}
   app.innerHTML=h;
 }
+/* ====================== simulateur d'examen officiel (A1 → B2) ====================== */
+var SIMD=null;
+function loadSim(){return SIMD?Promise.resolve():getJSON('data/sim.json').then(function(d){SIMD=d;});}
+var SIMT={A1:30,A2:35,B1:45,B2:55};
+var SIMS=[['l','Lesen','Compréhension écrite'],['h','Hören','Compréhension orale'],['g','Sprachbausteine','Grammaire et vocabulaire'],['w','Schreiben','Expression écrite'],['s','Sprechen','Expression orale']];
+var SM={lv:'',pages:[],i:0,ans:{},plays:{},wr:'',chk:{},run:false,done:false,t0:0,limit:0,res:null};
+var smTimer=null;
+function smSec(c){return SIMS.filter(function(x){return x[0]===c;})[0];}
+function smMk(q){return q.o.map(function(t,i){return {t:t,c:i===q.a};});}
+function smBuild(lv){
+  return Promise.all([loadSim(),loadAll(),loadVerbs()]).then(function(){
+    var D=SIMD[lv],pages=[];
+    D.lesen.forEach(function(t){t.q.forEach(function(q){pages.push({sec:'l',k:'q',q:q,tt:t.t,tx:t.x,opts:shuffle(smMk(q))});});});
+    D.horen.forEach(function(t,ti){t.q.forEach(function(q){pages.push({sec:'h',k:'q',q:q,tt:t.t,au:t.x,aid:'h'+ti,opts:shuffle(smMk(q))});});});
+    var n={A1:10,A2:12,B1:14,B2:16}[lv],nc=Math.round(n/4),tn={A1:[0],A2:[0,1,2],B1:[0,1,2,3],B2:[0,1,2,3,4,5]}[lv];
+    var cl=qByCats(LVCAT[lv],['cl']);if(cl.length<n-nc)cl=cl.concat(qByCats(LVCAT[lv],['tr','rt']));
+    var gq=pickN(cl,n-nc);
+    for(var i=0;i<nc;i++){var v=VERBS[Math.floor(Math.random()*VERBS.length)];gq.push(vQ(v,tn[Math.floor(Math.random()*tn.length)]));}
+    gq.forEach(function(q){pages.push({sec:'g',k:'q',q:q,opts:shuffle(smMk(q))});});
+    pages.push({sec:'w',k:'w'});
+    D.sprechen.forEach(function(it){pages.push({sec:'s',k:'s',it:it});});
+    return pages;
+  });
+}
+function smStart(lv){
+  SM.lv=lv;SM.pages=[];SM.i=0;SM.ans={};SM.plays={};SM.wr='';SM.chk={};SM.run=false;SM.done=false;SM.res=null;
+  app.innerHTML='<div class="top"><button class="iconbtn" data-back aria-label="Retour">&larr;</button><h1>Simulateur '+lv+'</h1></div><div class="spin">Préparation de l’épreuve…</div>';
+  smBuild(lv).then(function(p){
+    SM.pages=p;SM.t0=Date.now();SM.limit=SIMT[lv]*60;SM.run=true;
+    clearInterval(smTimer);smTimer=setInterval(smTick,1000);
+    if(V.name==='sim')smDraw();
+  }).catch(function(){app.innerHTML='<div class="empty">Chargement impossible.</div>';});
+}
+function smLeft(){return Math.max(0,SM.limit-Math.floor((Date.now()-SM.t0)/1000));}
+function smTick(){
+  if(!SM.run){clearInterval(smTimer);return;}
+  var l=smLeft(),el=document.getElementById('smtimer');
+  if(el){el.textContent=fmtT(l);el.classList.toggle('low',l<180);}
+  if(l<=0)smFinish(true);
+}
+function smDraw(){
+  var p=SM.pages[SM.i],s=smSec(p.sec);
+  var h='<div class="top"><button class="iconbtn" data-squit aria-label="Abandonner">&times;</button><h1>Simulateur '+SM.lv+'</h1><span class="timer" id="smtimer">'+fmtT(smLeft())+'</span></div>';
+  h+='<div class="prog"><span>'+s[1]+' · '+s[2]+'</span><span>'+(SM.i+1)+' / '+SM.pages.length+'</span></div>';
+  var D=SIMD[SM.lv];
+  if(p.k==='q'){
+    h+='<div class="q">';
+    if(p.tx)h+='<div class="setc"><b class="de">'+esc(p.tt)+'</b><p class="de" style="margin:6px 0 0">'+esc(p.tx)+'</p></div>';
+    if(p.au){var pl=SM.plays[p.aid]||0;h+='<div class="setc"><b>'+esc(p.tt)+'</b><div class="actions"><button class="btn pri" data-simplay="'+p.aid+'"'+(pl>=2?' disabled':'')+'>&#9654; Écouter ('+(2-pl)+' écoute'+(2-pl>1?'s':'')+' restante'+(2-pl>1?'s':'')+')</button></div><small>Comme à l’examen : deux écoutes au maximum, le texte n’est pas affiché.</small></div>';}
+    var q=p.q,title=q.t==='tr'?'Traduire en français':q.t==='rt'?'Traduire en allemand':q.t==='cj'?'Choisir la bonne forme':q.t==='cl'?'Compléter la phrase':'Choisir la bonne réponse';
+    h+='<div class="qt">'+title+'</div><div class="qq '+(q.t==='rt'?'frc':'de')+'">'+esc(q.q)+'</div>';
+    if((q.t==='cl'||q.t==='cj')&&q.hint)h+='<div class="hint frc">'+esc(q.hint)+'</div>';
+    h+='<div class="opts">';
+    p.opts.forEach(function(o,i){h+='<button class="opt '+(q.t==='tr'?'frc':'de')+(SM.ans[SM.i]===i?' sel':'')+'" data-sopt="'+i+'">'+esc(o.t)+'</button>';});
+    h+='</div></div>';
+  }else if(p.k==='w'){
+    var W=D.schreiben,wc=SM.wr.trim()?SM.wr.trim().split(/\s+/).length:0;
+    h+='<div class="setc"><b class="de">'+esc(W.p)+'</b><small>'+esc(W.fr)+'</small></div>';
+    h+='<textarea id="ans" rows="9" style="width:100%;box-sizing:border-box;font:inherit;padding:10px" placeholder="Schreiben Sie hier …" autocapitalize="sentences">'+esc(SM.wr)+'</textarea>';
+    h+=charsRow();
+    h+='<p style="color:var(--muted);margin:6px 0" id="swc">'+wc+' mot'+(wc>1?'s':'')+' · minimum conseillé : '+W.min+'</p>';
+  }else{
+    var it=p.it;
+    h+='<div class="setc"><b class="de">'+esc(it.p)+'</b><small>'+esc(it.fr)+'</small><small>Parlez à voix haute pendant 1 à 2 minutes, puis cochez ce que vous avez réussi à faire.</small></div>';
+    h+='<div class="sec">Expressions utiles</div><div class="list">'+it.ph.map(function(x){return '<div class="row"><span class="t"><b class="de">'+esc(x)+'</b></span>'+speakBtn(x)+'</div>';}).join('')+'</div>';
+    h+='<div class="sec">Mon auto-évaluation</div><div class="list">'+it.c.map(function(c,ci){var on=!!SM.chk[SM.i+':'+ci];return '<button class="row'+(on?' done':'')+'" data-schk="'+SM.i+':'+ci+'" aria-pressed="'+on+'"><span class="n">'+(on?'&#10003;':'·')+'</span><span class="t"><b class="de">'+esc(c)+'</b></span></button>';}).join('')+'</div>';
+  }
+  h+='<div class="actions"><button class="btn pri wide" data-snext="1">'+(SM.i+1<SM.pages.length?'Suivant':'Terminer l’examen')+'</button></div>';
+  app.innerHTML=h;
+}
+function smNext(){
+  if(SM.i+1>=SM.pages.length)return smFinish(false);
+  SM.i++;smDraw();window.scrollTo(0,0);
+}
+function smFinish(timeout){
+  clearInterval(smTimer);if(!SM.run)return;SM.run=false;
+  var D=SIMD[SM.lv],r={},bad=[];
+  ['l','h','g'].forEach(function(c){
+    var ok=0,n=0;
+    SM.pages.forEach(function(p,i){if(p.sec!==c)return;n++;var a=SM.ans[i];if(a!==undefined&&p.opts[a].c)ok++;else bad.push({p:p,a:a});});
+    r[c]=n?Math.round(ok/n*100):0;
+  });
+  var W=D.schreiben,txt=fold(SM.wr),wc=SM.wr.trim()?SM.wr.trim().split(/\s+/).length:0,hit=W.kw.map(function(g){return g.some(function(a){return txt.indexOf(fold(a))>=0;});});
+  var kn=hit.filter(Boolean).length;
+  r.w=wc?Math.round((kn/W.kw.length*.7+Math.min(1,wc/W.min)*.3)*100):0;
+  var tot=0,got=0;SM.pages.forEach(function(p,i){if(p.sec!=='s')return;p.it.c.forEach(function(c,ci){tot++;if(SM.chk[i+':'+ci])got++;});});
+  r.s=tot?Math.round(got/tot*100):0;
+  var total=Math.round((r.l+r.h+r.g+r.w+r.s)/5);
+  SM.res={r:r,total:total,hit:hit,wc:wc,bad:bad,timeout:!!timeout,t:Math.round((Date.now()-SM.t0)/1000)};
+  SM.done=true;
+  (S.sim=S.sim||[]).unshift({lv:SM.lv,tot:total,l:r.l,h:r.h,g:r.g,w:r.w,s:r.s,d:today(),t:SM.res.t});S.sim.length=Math.min(S.sim.length,20);
+  hlog('exam','','Simulateur '+SM.lv+' : '+total+' / 100');act(SM.pages.length);touchDay();save();persist(true);
+  if(V.name==='sim')vSim();
+}
+function smResultHTML(){
+  var R=SM.res,D=SIMD[SM.lv],r=R.r,pass=R.total>=60;
+  var h='<div class="score"><b>'+R.total+' / 100</b>'+(pass?'Bestanden : niveau '+SM.lv+' acquis (seuil 60).':'Pas encore : seuil de 60 non atteint.')+(R.timeout?'<br><small>Temps écoulé.</small>':'')+'</div><div class="pbar">';
+  SIMS.forEach(function(s){var p=r[s[0]];h+='<div><div class="l"><span>'+s[1]+' · '+s[2]+(s[0]==='w'||s[0]==='s'?' (estimation)':'')+'</span><span>'+p+' %</span></div><div class="bar"><i style="width:'+p+'%"></i></div></div>';});
+  h+='</div><p style="color:var(--muted);font-size:.88rem">Simulation inspirée du format des examens officiels (Goethe, telc), sous forme condensée : ce n’est pas un examen officiel. Schreiben est estimé d’après les points attendus et la longueur ; Sprechen repose sur votre auto-évaluation.</p>';
+  h+='<div class="sec">Schreiben : points attendus</div><div class="list">'+D.schreiben.lb.map(function(l,i){return '<div class="row'+(R.hit[i]?' done':'')+'"><span class="n">'+(R.hit[i]?'&#10003;':'×')+'</span><span class="t"><b class="de">'+esc(l)+'</b></span></div>';}).join('')+'</div>';
+  h+='<div class="setc"><b>Texte modèle</b><p class="de" style="margin:6px 0 0">'+esc(D.schreiben.model)+'</p>'+speakBtn(D.schreiben.model)+'<small>Votre texte : '+R.wc+' mots.</small></div>';
+  if(R.bad.length){h+='<div class="sec">Mes erreurs · '+R.bad.length+'</div><div class="list">';R.bad.forEach(function(b){var c=b.p.opts.filter(function(o){return o.c;})[0];h+='<div class="row"><span class="t"><b class="'+(b.p.q.t==='rt'?'frc':'de')+'">'+esc(b.p.q.q)+'</b><small>'+(b.a!==undefined?'Votre réponse : '+esc(b.p.opts[b.a].t):'Sans réponse')+'</small><div style="color:var(--good);font-weight:600">'+esc(c.t)+'</div></span></div>';});h+='</div>';}
+  return h;
+}
+function vSim(){
+  var top='<div class="top"><button class="iconbtn" data-back aria-label="Retour">&larr;</button><h1>Simulateur d’examen</h1></div>';
+  if(SM.run&&SM.pages.length)return smDraw();
+  if(SM.done&&SM.res){app.innerHTML=top+smResultHTML()+'<div class="actions"><button class="btn wide" data-simgo="'+SM.lv+'">Refaire un simulateur '+SM.lv+'</button><button class="btn wide" data-simmenu="1">Retour au simulateur</button></div>';return;}
+  var h=top+'<p style="color:var(--muted);margin:10px 0">Passez une épreuve complète en conditions d’examen, avec chronomètre et sans correction pendant l’épreuve : <b>Lesen</b> (lecture), <b>Hören</b> (écoute, 2 fois), <b>Sprachbausteine</b> (grammaire et vocabulaire), <b>Schreiben</b> (écrit) et <b>Sprechen</b> (oral). Note finale sur 100, seuil de réussite 60.</p><div class="list">';
+  var nm={A1:'Niveau débutant',A2:'Niveau élémentaire',B1:'Niveau intermédiaire',B2:'Niveau avancé'};
+  ['A1','A2','B1','B2'].forEach(function(lv){h+='<button class="row" data-simgo="'+lv+'"><span class="n">'+lv+'</span><span class="t"><b>Simulateur '+lv+'</b><small>'+nm[lv]+' · '+SIMT[lv]+' minutes · 5 épreuves</small></span><span class="chev">&rsaquo;</span></button>';});
+  h+='</div>';
+  var ex=S.sim||[];
+  if(ex.length)h+='<div class="sec">Mes résultats</div><div class="list">'+ex.slice(0,8).map(function(e){return '<div class="row"><span class="n">'+e.lv+'</span><span class="t"><b>'+e.tot+' / 100</b><small>'+esc(e.d)+' · '+Math.round(e.t/60)+' min · L '+e.l+' · H '+e.h+' · G '+e.g+' · S '+e.w+' · M '+e.s+'</small></span><span class="tg '+(e.tot>=60?'okt':'lat')+'">'+(e.tot>=60?'réussi':'à refaire')+'</span></div>';}).join('')+'</div>';
+  app.innerHTML=h+'<p style="color:var(--muted);font-size:.85rem">Format inspiré des examens officiels (Goethe, telc) sous forme condensée : ce n’est pas un examen officiel.</p>';
+}
+document.addEventListener('click',function(e){
+  var b=e.target.closest('[data-simgo],[data-sopt],[data-snext],[data-squit],[data-simplay],[data-schk],[data-simmenu]');if(!b)return;
+  var d=b.dataset;
+  if(d.simgo)return smStart(d.simgo);
+  if(d.simmenu!==undefined){SM.done=false;SM.res=null;return vSim();}
+  if(!SM.run)return;
+  if(d.sopt!==undefined){SM.ans[SM.i]=+d.sopt;document.querySelectorAll('[data-sopt]').forEach(function(x){x.classList.toggle('sel',x===b);});return;}
+  if(d.snext!==undefined){var ta=document.getElementById('ans');if(ta&&SM.pages[SM.i].k==='w')SM.wr=ta.value;return smNext();}
+  if(d.squit!==undefined){if(confirm('Abandonner l’examen ? Les réponses données seront perdues.')){clearInterval(smTimer);SM.run=false;SM.done=false;vSim();}return;}
+  if(d.simplay!==undefined){var pg=SM.pages.filter(function(x){return x.aid===d.simplay;})[0];if((SM.plays[d.simplay]||0)>=2)return;SM.plays[d.simplay]=(SM.plays[d.simplay]||0)+1;speak(pg.au);var left=2-SM.plays[d.simplay];b.textContent='▶ Écouter ('+left+' écoute'+(left>1?'s':'')+' restante'+(left>1?'s':'')+')';if(left<=0)b.disabled=true;return;}
+  if(d.schk!==undefined){SM.chk[d.schk]=!SM.chk[d.schk];var on=!!SM.chk[d.schk];b.classList.toggle('done',on);b.setAttribute('aria-pressed',on);b.querySelector('.n').innerHTML=on?'&#10003;':'·';return;}
+});
+document.addEventListener('input',function(e){if(e.target.id!=='ans'||!SM.run||SM.pages[SM.i].k!=='w')return;SM.wr=e.target.value;var n=SM.wr.trim()?SM.wr.trim().split(/\s+/).length:0,el=document.getElementById('swc');if(el)el.textContent=n+' mot'+(n>1?'s':'')+' · minimum conseillé : '+SIMD[SM.lv].schreiben.min;});
 function lvToPlan(){
   var est=S.level&&S.level.est||'A0',next={'A0 (débutant)':1,'A1':4,'A2':11,'B1':14,'B2':99}[est];
   return loadPlan().then(function(){
